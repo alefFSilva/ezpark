@@ -20,8 +20,17 @@ class DefaultTheme {
           onError: AppColors.neutral1000,
           background: AppColors.brandPrimary,
           onBackground: AppColors.neutral1000,
-          surface: AppColors.brandPrimary,
-          onSurface: AppColors.neutral1,
+          surface: AppColors.brandSecondary,
+          onSurface: AppColors.brandPrimary,
+        ),
+        cardTheme: CardTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: const BorderSide(
+              color: AppColors.brandPrimary,
+              width: .5,
+            ),
+          ),
         ),
         textTheme: const TextTheme(
           titleLarge: TextStyle(
