@@ -1,8 +1,8 @@
 import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/sizes/spacings.dart';
-import '../../../core/theme/colors/colors.dart';
+import '../../../../../core/sizes/spacings.dart';
+import '../../../../../core/theme/colors/colors.dart';
 import '../enums/spot_type.dart';
 
 class NewSpotForm extends StatefulWidget {

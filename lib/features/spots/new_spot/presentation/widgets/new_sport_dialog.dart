@@ -1,8 +1,8 @@
 import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
-import 'package:ezpark/features/spots/widgets/new_spot_form.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/sizes/spacings.dart';
+import '../../../../../core/sizes/spacings.dart';
+import 'new_spot_form.dart';
 
 class NewSpotDialog extends StatelessWidget {
   const NewSpotDialog({Key? key}) : super(key: key);
