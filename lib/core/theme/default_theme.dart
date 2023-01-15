@@ -24,6 +24,10 @@ class DefaultTheme {
           onSurface: AppColors.brandPrimary,
         ),
         cardTheme: CardTheme(
+          clipBehavior: Clip.antiAlias,
+          color: Colors.white,
+          shadowColor: Colors.black,
+          elevation: 3,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: const BorderSide(
