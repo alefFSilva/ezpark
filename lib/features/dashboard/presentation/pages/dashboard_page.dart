@@ -2,6 +2,7 @@ import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
 import 'package:ezpark/core/sizes/font_size.dart';
 import 'package:ezpark/core/sizes/spacings.dart';
 import 'package:ezpark/core/theme/colors/colors.dart';
+import 'package:ezpark/features/spots/widgets/new_sport_dialog.dart';
 
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,8 @@ class DashBoardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('EzPark'),
-        elevation: 12,
+        elevation: 3,
+        shadowColor: Colors.black,
       ),
       body: Padding(
         padding: const EdgeInsets.all(Spacings.xs),
@@ -52,7 +54,7 @@ class _AddNewEntryCard extends StatelessWidget {
         children: [
           Icon(
             Icons.directions_car_outlined,
-            color: colorScheme.primary,
+            color: colorScheme.primary.withOpacity(.7),
             size: 44.width,
           ),
           SizedBox(
@@ -79,7 +81,6 @@ class _SpotsCard extends StatelessWidget {
 
     return _DashboardCard(
       title: 'Vagas',
-      onTap: () => print('go to spots list'),
       child: Column(
         children: [
           Row(
@@ -149,11 +150,17 @@ class _RegisterNewSpotCard extends StatelessWidget {
 
     return _DashboardCard(
       title: '',
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) {
+          return const NewSpotDialog();
+        },
+      ),
       child: Column(
         children: [
           Icon(
             Icons.add_circle_outline_outlined,
-            color: colorScheme.primary,
+            color: colorScheme.primary.withOpacity(.7),
             size: 44.width,
           ),
           const SizedBox(
@@ -195,7 +202,7 @@ class _ReportCard extends StatelessWidget {
         children: [
           Icon(
             Icons.analytics_outlined,
-            color: colorScheme.primary,
+            color: colorScheme.primary.withOpacity(.7),
             size: 44.width,
           ),
           const SizedBox(
@@ -263,14 +270,14 @@ class _DashboardCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        color: Colors.white,
-        child: Padding(
+        child: Container(
           padding: const EdgeInsets.only(
             top: Spacings.xs,
             right: Spacings.xs,
             bottom: Spacings.xxs,
             left: Spacings.xs,
           ),
+          color: Colors.white,
           child: Column(
             children: [
               Text(
