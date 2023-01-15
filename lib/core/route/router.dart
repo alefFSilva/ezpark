@@ -1,3 +1,4 @@
+import 'package:ezpark/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:go_router/go_router.dart';
 
 import '../initializer/widgets/initializer.dart';
@@ -15,6 +16,10 @@ final router = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) => const Initializer(),
+    ),
+    GoRoute(
+      path: Routes.dashboard.description,
+      builder: (context, state) => const DashBoardPage(),
     ),
   ],
 );

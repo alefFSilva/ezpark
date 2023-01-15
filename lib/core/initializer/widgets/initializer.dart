@@ -14,7 +14,7 @@ class Initializer extends ConsumerWidget {
     ref.listen<void>(
       initializerProvider,
       ((previous, next) {
-        print('go to dashboard');
+        context.go(Routes.dashboard.description);
       }),
     );
     return const SplashScreenPage();
