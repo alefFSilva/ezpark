@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../features/splashscreen/presentation/splash_screen_page.dart';
+import '../../../features/splashscreen/presentation/pages/splash_screen_page.dart';
 import '../../route/router.dart';
 import '../providers.dart';
 
