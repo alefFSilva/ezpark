@@ -2,6 +2,7 @@ import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
 import 'package:ezpark/core/sizes/font_size.dart';
 import 'package:ezpark/core/sizes/spacings.dart';
 import 'package:ezpark/core/theme/colors/colors.dart';
+import 'package:ezpark/core/theme/components/loading/loading_overlay.dart';
 import 'package:ezpark/features/spots/new_spot/presentation/widgets/new_sport_dialog.dart';
 
 import 'package:flutter/material.dart';
@@ -24,14 +25,16 @@ class DashBoardPage extends StatelessWidget {
         elevation: 3,
         shadowColor: Colors.black,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(Spacings.xs),
-        child: GridView.builder(
-          itemCount: dashboardOption.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+      body: LoadingOverlay(
+        child: Padding(
+          padding: const EdgeInsets.all(Spacings.xs),
+          child: GridView.builder(
+            itemCount: dashboardOption.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+            ),
+            itemBuilder: (context, index) => dashboardOption[index],
           ),
-          itemBuilder: (context, index) => dashboardOption[index],
         ),
       ),
     );
