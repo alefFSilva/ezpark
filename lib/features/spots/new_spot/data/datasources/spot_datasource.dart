@@ -1,48 +1,51 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:ezpark/core/network/response/entities/response_result.dart';
 import 'package:ezpark/features/spots/new_spot/data/models/spot_model.dart';
 import 'package:ezpark/features/spots/new_spot/domain/entities/add_spot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/erros/failure.dart';
+import '../../../../../core/firebase/firestore_methods.dart';
 
 final spotDatasourceProvider = Provider<SpotDatasource>((ref) {
   return SpotDatasourceImpl();
 });
 
 abstract class SpotDatasource {
-  Future<Either<Failure, SpotModel>> add(AddSpot addSpot);
+  Future<ResponseResult<SpotModel>> addNew(AddSpot addSpot);
 }
 
-class SpotDatasourceImpl implements SpotDatasource {
+class SpotDatasourceImpl with FireStoreMethods implements SpotDatasource {
+  String get _spotsCollectionDescription => 'spots';
+
   @override
-  Future<Either<Failure, SpotModel>> add(AddSpot addSpot) async {
-    final firestoreInstance = FirebaseFirestore.instance;
-    final spotCollectionRef = firestoreInstance.collection('spots');
+  Future<ResponseResult<SpotModel>> addNew(AddSpot addSpot) async {
+    final spotCollectionRef = getCollectionReference(
+      collectionName: _spotsCollectionDescription,
+    );
 
-    final newSpot = <String, dynamic>{
-      'number': addSpot.spotNumber,
-      'spotType': addSpot.spotType.toJson(),
-    };
+    final bool documentAlreadyExists = await checkIfDocumentExists(
+      collectionRef: spotCollectionRef,
+      fieldDescriptionToFilter: 'number',
+      objectToCompare: addSpot.spotNumber,
+    );
 
-    final querySnapshot = await spotCollectionRef
-        .where('number', isEqualTo: addSpot.spotNumber)
-        .get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      return const Left<Failure, SpotModel>(
-        Failure(
-          errorMessage: 'Este número de vaga já existe',
-        ),
-      );
+    if (documentAlreadyExists) {
+      return ResponseResult.onError(
+          errorMessage: 'Este número de vaga já existe');
     }
 
-    final addedSpotRef = await spotCollectionRef.add(newSpot);
-    final addedSpot = await addedSpotRef.get();
-    return Right<Failure, SpotModel>(
-      SpotModel.fromJson(
-        data: addedSpot.data() as Map<String, dynamic>,
-      ),
+    final addedSpotMap = await add(
+      collectionRef: spotCollectionRef,
+      documentToAdd: <String, dynamic>{
+        'number': addSpot.spotNumber,
+        'spotType': addSpot.spotType.toJson(),
+      },
+    );
+
+    return ResponseResult<SpotModel>.onSuccess(
+      data: SpotModel.fromJson(data: addedSpotMap),
     );
   }
 }

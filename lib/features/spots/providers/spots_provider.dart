@@ -18,16 +18,8 @@ class AddSpotFormNotifier extends StateNotifier<AsyncValue<ResponseResult>> {
 
   Future<void> addSpot(AddSpot newSpot) async {
     state = const AsyncValue.loading();
-
     final result = await _spotRepository.addSpot(newSpot);
-    state = result.fold(
-      (l) => AsyncValue<ResponseResult>.data(ResponseResult.onError(
-        errorMessage: l.errorMessage!,
-      )),
-      (_) => AsyncValue<ResponseResult>.data(
-        ResponseResult.onSuccess(),
-      ),
-    );
+    state = AsyncValue<ResponseResult>.data(result);
   }
 }
 

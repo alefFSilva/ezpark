@@ -1,8 +1,7 @@
-import 'package:dartz/dartz.dart';
+import 'package:ezpark/core/network/response/entities/response_result.dart';
 import 'package:ezpark/features/spots/new_spot/domain/entities/add_spot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/erros/failure.dart';
 import '../../domain/entities/spot.dart';
 import '../../domain/repositories/spot_repository.dart';
 import '../datasources/spot_datasource.dart';
@@ -21,8 +20,8 @@ class SpotRepositoryImpl implements SpotRepository {
 
   final SpotDatasource _datasource;
   @override
-  Future<Either<Failure, Spot>> addSpot(
+  Future<ResponseResult<Spot>> addSpot(
     AddSpot addSpot,
   ) async =>
-      await _datasource.add(addSpot);
+      await _datasource.addNew(addSpot);
 }
