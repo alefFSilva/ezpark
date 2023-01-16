@@ -11,7 +11,7 @@ class DefaultTheme {
         colorScheme: const ColorScheme(
           brightness: Brightness.light,
           primary: AppColors.brandPrimary,
-          onPrimary: AppColors.neutral1000,
+          onPrimary: AppColors.brandSecondary,
           tertiary: AppColors.brandThird,
           onTertiary: AppColors.neutral1000,
           secondary: AppColors.brandSecondary,
