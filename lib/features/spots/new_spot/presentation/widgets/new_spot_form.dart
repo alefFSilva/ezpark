@@ -1,18 +1,24 @@
 import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
+import 'package:ezpark/features/spots/new_spot/domain/entities/add_spot.dart';
+import 'package:ezpark/features/spots/providers/spots_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../core/network/response/entities/response_result.dart';
 import '../../../../../core/sizes/spacings.dart';
 import '../../../../../core/theme/colors/colors.dart';
+import '../../../../../core/theme/components/loading/loading_overlay.dart';
 import '../enums/spot_type.dart';
+import '../../../providers/spots_provider.dart';
 
-class NewSpotForm extends StatefulWidget {
+class NewSpotForm extends ConsumerStatefulWidget {
   const NewSpotForm({Key? key}) : super(key: key);
 
   @override
-  State<NewSpotForm> createState() => _NewSpotFormState();
+  ConsumerState<NewSpotForm> createState() => _NewSpotFormState();
 }
 
-class _NewSpotFormState extends State<NewSpotForm> {
+class _NewSpotFormState extends ConsumerState<NewSpotForm> {
   late final TextEditingController _spotDescription;
   SpotType? _selectedSpotType;
 
@@ -27,12 +33,11 @@ class _NewSpotFormState extends State<NewSpotForm> {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
+    _setResponseListener(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Form(
-        onChanged: () {
-          setState(() {});
-        },
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -141,7 +146,16 @@ class _NewSpotFormState extends State<NewSpotForm> {
                   child: ElevatedButton(
                     onPressed: (_selectedSpotType != null &&
                             _spotDescription.text.isNotEmpty)
-                        ? () => print('salvar')
+                        ? () {
+                            _toggleLoading();
+                            ref.read(spotNotiferProvider.notifier).addSpot(
+                                  AddSpot(
+                                    spotNumber:
+                                        int.parse(_spotDescription.text),
+                                    spotType: _selectedSpotType!,
+                                  ),
+                                );
+                          }
                         : null,
                     style: ElevatedButton.styleFrom(
                       primary: colorScheme.primary,
@@ -164,6 +178,43 @@ class _NewSpotFormState extends State<NewSpotForm> {
       ),
     );
   }
+
+  void _toggleLoading() => ref.read(loadingOverlayProvider.notifier).toggle();
+  void _setResponseListener(BuildContext context) =>
+      ref.listen<AsyncValue<ResponseResult>>(
+        spotNotiferProvider,
+        (_, state) {
+          if (!state.isLoading &&
+              (state.value != null && !state.value!.success)) {
+            _toggleLoading();
+            _showSnackBarMessage(message: state.value!.errorMessage!);
+          } else if (state.value != null && state.value!.success) {
+            Navigator.pop(context);
+            _toggleLoading();
+            _showSnackBarMessage(message: 'Vaga cadastrada com sucesso!');
+          }
+        },
+      );
+
+  void _showSnackBarMessage({
+    required String message,
+    bool isAnErrorMessage = false,
+  }) =>
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: isAnErrorMessage
+              ? Theme.of(context).colorScheme.error
+              : Theme.of(context).colorScheme.primary,
+          content: Text(
+            message,
+            style: TextStyle(
+              color: isAnErrorMessage
+                  ? Theme.of(context).colorScheme.onError
+                  : Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
+        ),
+      );
 }
 
 class _TextFormField extends StatelessWidget {
