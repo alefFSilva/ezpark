@@ -1,31 +1,51 @@
 import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
-import 'package:ezpark/features/spots/new_spot/domain/entities/add_spot.dart';
-import 'package:ezpark/features/spots/providers/spots_provider.dart';
+import 'package:ezpark/core/route/router.dart';
+import 'package:ezpark/features/spots/enums/spot_form_action.dart';
+import 'package:ezpark/features/spots/enums/spot_status.dart';
+import 'package:ezpark/features/spots/providers/add_spot_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/network/response/entities/response_result.dart';
 import '../../../../../core/sizes/spacings.dart';
 import '../../../../../core/theme/colors/colors.dart';
 import '../../../../../core/theme/components/loading/loading_overlay.dart';
-import '../enums/spot_type.dart';
-import '../../../providers/spots_provider.dart';
+import '../../../domain/entities/add_spot.dart';
+import '../../../domain/entities/spot.dart';
+import '../../../enums/spot_type.dart';
+import '../../../providers/add_spot_provider.dart';
+import '../../../providers/spots_list_provider.dart';
 
-class NewSpotForm extends ConsumerStatefulWidget {
-  const NewSpotForm({Key? key}) : super(key: key);
+class SpotForm extends ConsumerStatefulWidget {
+  const SpotForm({
+    Key? key,
+    required this.spotFormAction,
+    this.number,
+    this.spotType,
+  }) : super(key: key);
+
+  final int? number;
+  final SpotType? spotType;
+  final SpotFormAction spotFormAction;
 
   @override
-  ConsumerState<NewSpotForm> createState() => _NewSpotFormState();
+  ConsumerState<SpotForm> createState() => _SpotFormState();
 }
 
-class _NewSpotFormState extends ConsumerState<NewSpotForm> {
+class _SpotFormState extends ConsumerState<SpotForm> {
   late final TextEditingController _spotDescription;
   SpotType? _selectedSpotType;
 
   @override
   void initState() {
     super.initState();
+    _selectedSpotType = _selectedSpotType ?? widget.spotType;
     _spotDescription = TextEditingController();
+
+    if (widget.number != null) {
+      _spotDescription.text = widget.number.toString();
+    }
   }
 
   @override
@@ -36,7 +56,7 @@ class _NewSpotFormState extends ConsumerState<NewSpotForm> {
     _setResponseListener(context);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(Spacings.xs),
       child: Form(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -146,16 +166,7 @@ class _NewSpotFormState extends ConsumerState<NewSpotForm> {
                   child: ElevatedButton(
                     onPressed: (_selectedSpotType != null &&
                             _spotDescription.text.isNotEmpty)
-                        ? () {
-                            _toggleLoading();
-                            ref.read(spotNotiferProvider.notifier).addSpot(
-                                  AddSpot(
-                                    spotNumber:
-                                        int.parse(_spotDescription.text),
-                                    spotType: _selectedSpotType!,
-                                  ),
-                                );
-                          }
+                        ? () => _saveSpot()
                         : null,
                     style: ElevatedButton.styleFrom(
                       primary: colorScheme.primary,
@@ -187,11 +198,24 @@ class _NewSpotFormState extends ConsumerState<NewSpotForm> {
           if (!state.isLoading &&
               (state.value != null && !state.value!.success)) {
             _toggleLoading();
-            _showSnackBarMessage(message: state.value!.errorMessage!);
+            _showSnackBarMessage(
+              message: state.value!.errorMessage!,
+              isAnErrorMessage: true,
+            );
           } else if (state.value != null && state.value!.success) {
-            Navigator.pop(context);
             _toggleLoading();
-            _showSnackBarMessage(message: 'Vaga cadastrada com sucesso!');
+            Navigator.pop(context);
+            if (widget.spotFormAction == SpotFormAction.add) {
+              context.push(Routes.spotsList.description);
+            }
+
+            String messageOperation =
+                widget.spotFormAction == SpotFormAction.add
+                    ? 'cadastrada'
+                    : 'editada';
+            _showSnackBarMessage(
+              message: 'Vaga $messageOperation com sucesso!',
+            );
           }
         },
       );
@@ -215,6 +239,23 @@ class _NewSpotFormState extends ConsumerState<NewSpotForm> {
           ),
         ),
       );
+
+  void _saveSpot() {
+    _toggleLoading();
+    ref
+        .read(spotNotiferProvider.notifier)
+        .saveSpot(
+          Spot(
+            number: int.parse(_spotDescription.text),
+            spotType: _selectedSpotType!,
+            spotStatus: SpotStatus.active,
+          ),
+          widget.spotFormAction,
+        )
+        .then(
+          (value) => ref.read(spotsListProvider.notifier).refresh(),
+        );
+  }
 }
 
 class _TextFormField extends StatelessWidget {

@@ -3,9 +3,13 @@ import 'package:ezpark/core/sizes/font_size.dart';
 import 'package:ezpark/core/sizes/spacings.dart';
 import 'package:ezpark/core/theme/colors/colors.dart';
 import 'package:ezpark/core/theme/components/loading/loading_overlay.dart';
-import 'package:ezpark/features/spots/new_spot/presentation/widgets/new_sport_dialog.dart';
+import 'package:ezpark/features/spots/enums/spot_form_action.dart';
+import 'package:ezpark/features/spots/new_spot/presentation/widgets/spot_dialog.dart';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../core/route/router.dart';
 
 class DashBoardPage extends StatelessWidget {
   const DashBoardPage({Key? key}) : super(key: key);
@@ -83,6 +87,9 @@ class _SpotsCard extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return _DashboardCard(
+      onTap: () => context.push(
+        Routes.spotsList.description,
+      ),
       title: 'Vagas',
       child: Column(
         children: [
@@ -123,16 +130,16 @@ class _SpotsCard extends StatelessWidget {
               ),
             ],
           ),
-          TextButton(
-            onPressed: null,
-            child: Text(
-              'Ver Vagas',
-              textAlign: TextAlign.center,
-              style: textTheme.displaySmall!.copyWith(
-                color: AppColors.neutral500,
-                decoration: TextDecoration.underline,
-                letterSpacing: 1,
-              ),
+          SizedBox(
+            height: 10.height,
+          ),
+          Text(
+            'Ver Vagas',
+            textAlign: TextAlign.center,
+            style: textTheme.displaySmall!.copyWith(
+              color: AppColors.neutral500,
+              decoration: TextDecoration.underline,
+              letterSpacing: 1,
             ),
           )
         ],
@@ -156,7 +163,9 @@ class _RegisterNewSpotCard extends StatelessWidget {
       onTap: () => showDialog(
         context: context,
         builder: (context) {
-          return const NewSpotDialog();
+          return const SpotDialog(
+            spotFormAction: SpotFormAction.add,
+          );
         },
       ),
       child: Column(

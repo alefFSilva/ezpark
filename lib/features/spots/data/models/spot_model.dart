@@ -1,13 +1,15 @@
-import 'package:ezpark/features/spots/new_spot/presentation/enums/spot_type.dart';
+import 'package:ezpark/features/spots/enums/spot_status.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/spot.dart';
+import '../../enums/spot_type.dart';
 
 @immutable
 class SpotModel extends Spot {
-  SpotModel({
+  const SpotModel({
     required super.number,
     required super.spotType,
+    required super.spotStatus,
   });
 
   factory SpotModel.fromJson({
@@ -16,7 +18,10 @@ class SpotModel extends Spot {
     return SpotModel(
       number: data['number'],
       spotType: SpotType.fromJson(
-        data['spotType'],
+        data['type'],
+      ),
+      spotStatus: SpotStatus.fromJson(
+        data['status'],
       ),
     );
   }

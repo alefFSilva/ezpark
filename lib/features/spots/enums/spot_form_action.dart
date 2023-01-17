@@ -1,0 +1,4 @@
+enum SpotFormAction {
+  edit,
+  add,
+}

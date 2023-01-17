@@ -1,5 +1,4 @@
 import 'package:ezpark/core/network/response/entities/response_result.dart';
-import 'package:ezpark/features/spots/new_spot/domain/entities/add_spot.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/spot.dart';
@@ -21,7 +20,26 @@ class SpotRepositoryImpl implements SpotRepository {
   final SpotDatasource _datasource;
   @override
   Future<ResponseResult<Spot>> addSpot(
-    AddSpot addSpot,
+    Spot addSpot,
   ) async =>
       await _datasource.addNew(addSpot);
+
+  @override
+  Future<ResponseResult<List<Spot>>> getSpots() async =>
+      await _datasource.getSpots();
+
+  @override
+  Future<ResponseResult> remove({
+    required int spotNumber,
+  }) =>
+      _datasource.remove(spotNumber: spotNumber);
+
+  @override
+  Future<ResponseResult<Spot>> saveSpot({
+    required Spot spotToSave,
+  }) {
+    return _datasource.saveSpot(
+      spot: spotToSave,
+    );
+  }
 }
