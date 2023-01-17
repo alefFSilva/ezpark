@@ -7,14 +7,14 @@ import '../domain/entities/spot.dart';
 import '../domain/repositories/spot_repository.dart';
 
 final spotNotiferProvider =
-    StateNotifierProvider<AddSpotFormNotifier, AsyncValue<ResponseResult>>(
-  (ref) => AddSpotFormNotifier(
+    StateNotifierProvider<SaveSpotFormNotifier, AsyncValue<ResponseResult>>(
+  (ref) => SaveSpotFormNotifier(
     spotRepository: ref.read(spotRepositoryProvider),
   ),
 );
 
-class AddSpotFormNotifier extends StateNotifier<AsyncValue<ResponseResult>> {
-  AddSpotFormNotifier({
+class SaveSpotFormNotifier extends StateNotifier<AsyncValue<ResponseResult>> {
+  SaveSpotFormNotifier({
     required SpotRepository spotRepository,
   })  : _spotRepository = spotRepository,
         super(
