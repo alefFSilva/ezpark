@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/colors/colors.dart';
 import '../../domain/entities/spot.dart';
-import '../../new_spot/presentation/widgets/spot_dialog.dart';
-import '../../providers/spots_list_provider.dart';
+import '../spot_dialog.dart';
+import 'spots_list_provider.dart';
 
 class SpotsListPage extends StatelessWidget {
   const SpotsListPage({Key? key}) : super(key: key);

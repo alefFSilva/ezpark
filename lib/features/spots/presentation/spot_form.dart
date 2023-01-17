@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../core/network/response/entities/response_result.dart';
-import '../../../../../core/sizes/spacings.dart';
-import '../../../../../core/theme/colors/colors.dart';
-import '../../../../../core/theme/components/loading/loading_overlay.dart';
-import '../../../domain/entities/spot.dart';
-import '../../../enums/spot_type.dart';
-import '../../../providers/add_spot_provider.dart';
-import '../../../providers/spots_list_provider.dart';
+import '../../../core/network/response/entities/response_result.dart';
+import '../../../core/sizes/spacings.dart';
+import '../../../core/theme/colors/colors.dart';
+import '../../../core/theme/components/loading/loading_overlay.dart';
+import '../domain/entities/spot.dart';
+import '../enums/spot_type.dart';
+import '../providers/add_spot_provider.dart';
+import 'pages/spots_list_provider.dart';
 
 class SpotForm extends ConsumerStatefulWidget {
   const SpotForm({

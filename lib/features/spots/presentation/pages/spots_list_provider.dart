@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/repositories/spot_repository_impl.dart';
-
-import '../domain/entities/spot.dart';
-import '../domain/repositories/spot_repository.dart';
+import '../../data/repositories/spot_repository_impl.dart';
+import '../../domain/entities/spot.dart';
+import '../../domain/repositories/spot_repository.dart';
 
 final spotsListProvider = AsyncNotifierProvider<SpotsListNotifier, List<Spot>>(
   () => SpotsListNotifier(),

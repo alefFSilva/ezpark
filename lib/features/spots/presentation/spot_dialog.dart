@@ -3,7 +3,7 @@ import 'package:ezpark/features/spots/enums/spot_form_action.dart';
 import 'package:ezpark/features/spots/enums/spot_type.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/sizes/spacings.dart';
+import '../../../core/sizes/spacings.dart';
 import 'spot_form.dart';
 
 class SpotDialog extends StatelessWidget {

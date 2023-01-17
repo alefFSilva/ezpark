@@ -4,7 +4,7 @@ import 'package:ezpark/core/sizes/spacings.dart';
 import 'package:ezpark/core/theme/colors/colors.dart';
 import 'package:ezpark/core/theme/components/loading/loading_overlay.dart';
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
-import 'package:ezpark/features/spots/new_spot/presentation/widgets/spot_dialog.dart';
+import 'package:ezpark/features/spots/presentation/spot_dialog.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -64,7 +64,7 @@ class _AddNewEntryCard extends StatelessWidget {
             color: colorScheme.primary.withOpacity(.7),
             size: 44.width,
           ),
-          SizedBox(
+          const SizedBox(
             height: Spacings.xs,
           ),
           Text(
