@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/firebase/firestore_methods.dart';
 import '../../domain/entities/spot.dart';
+import '../../enums/spot_status.dart';
 import '../models/spot_model.dart';
 
 final spotDatasourceProvider = Provider<SpotDatasource>(
@@ -15,8 +16,14 @@ abstract class SpotDatasource {
   Future<ResponseResult<SpotModel>> saveSpot({
     required Spot spot,
   });
-  Future<ResponseResult<List<SpotModel>>> getSpots();
+  Future<ResponseResult<List<SpotModel>>> getSpots({
+    SpotStatus? spotStatus,
+  });
   Future<ResponseResult> remove({required int spotNumber});
+  Future<ResponseResult> setStatus({
+    required int spotNumber,
+    required SpotStatus spotStatus,
+  });
 }
 
 class SpotDatasourceImpl with FireStoreMethods implements SpotDatasource {
@@ -54,8 +61,17 @@ class SpotDatasourceImpl with FireStoreMethods implements SpotDatasource {
   }
 
   @override
-  Future<ResponseResult<List<SpotModel>>> getSpots() async {
-    final spotsSnapshot = await _spotCollectionRef.get();
+  Future<ResponseResult<List<SpotModel>>> getSpots({
+    SpotStatus? spotStatus,
+  }) async {
+    final spotsSnapshot = spotStatus != null
+        ? await _spotCollectionRef
+            .where(
+              'status',
+              isEqualTo: spotStatus.toJson(),
+            )
+            .get()
+        : await _spotCollectionRef.get();
     final spotsList = spotsSnapshot.docs.map((e) {
       return SpotModel.fromJson(
         data: e.data(),
@@ -107,5 +123,29 @@ class SpotDatasourceImpl with FireStoreMethods implements SpotDatasource {
     );
 
     return ResponseResult.onSuccess();
+  }
+
+  @override
+  Future<ResponseResult<void>> setStatus({
+    required int spotNumber,
+    required SpotStatus spotStatus,
+  }) async {
+    String? docID = await getDocID(
+      collectionRef: _spotCollectionRef,
+      fieldDescriptionToFilter: 'number',
+      objectToCompare: spotNumber,
+    );
+
+    if (docID == null) {
+      return ResponseResult.onError(errorMessage: 'Vaga não encontrada');
+    }
+
+    return await _spotCollectionRef.doc(docID).update(
+      {
+        'status': spotStatus.toJson(),
+      },
+    ).then(
+      (value) => ResponseResult<void>.onSuccess(),
+    );
   }
 }
