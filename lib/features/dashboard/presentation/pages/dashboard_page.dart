@@ -289,7 +289,9 @@ class _ReportCard extends StatelessWidget {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return _DashboardCard(
-      title: '',
+      onTap: () => context.push(
+        Routes.reportPage.description,
+      ),
       child: Column(
         children: [
           Icon(
@@ -345,13 +347,13 @@ class _CardTextLine extends StatelessWidget {
 
 class _DashboardCard extends StatelessWidget {
   const _DashboardCard({
-    required this.title,
+    this.title,
     required this.child,
     this.onTap,
     Key? key,
   }) : super(key: key);
 
-  final String title;
+  final String? title;
   final void Function()? onTap;
   final Widget child;
 
@@ -373,7 +375,7 @@ class _DashboardCard extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                title,
+                title ?? '',
                 textAlign: TextAlign.center,
                 style:
                     textTheme.titleMedium!.copyWith(color: colorScheme.primary),

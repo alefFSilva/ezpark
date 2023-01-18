@@ -17,4 +17,6 @@ abstract class EntryRepository {
     required String entryID,
     required EntryStatus status,
   });
+
+  Future<ResponseResult<List<Entry>>> getTodayEntries();
 }

@@ -19,6 +19,8 @@ abstract class EntryDatasource {
     required String entryID,
     required EntryStatus status,
   });
+
+  Future<ResponseResult<List<Entry>>> getTodayEntries();
 }
 
 class EntryDatasourceImpl with FireStoreMethods implements EntryDatasource {
@@ -111,5 +113,37 @@ class EntryDatasourceImpl with FireStoreMethods implements EntryDatasource {
     } catch (_) {
       return ResponseResult.onError(errorMessage: 'Erro ao registrar a saída.');
     }
+  }
+
+  @override
+  Future<ResponseResult<List<Entry>>> getTodayEntries() async {
+    final allEntries = await _getEntriesList();
+    final nowDatetime = DateTime.now();
+    final filteredEntries = allEntries
+        .where(
+          (EntryModel entry) => entry.entryTime.isAfter(
+            DateTime(
+              nowDatetime.year,
+              nowDatetime.month,
+              nowDatetime.day,
+            ),
+          ),
+        )
+        .toList();
+    return ResponseResult<List<Entry>>.onSuccess(
+      data: filteredEntries,
+    );
+  }
+
+  Future<List<EntryModel>> _getEntriesList() async {
+    final entriesSnapshot = await _entryCollectionRef.get();
+
+    return entriesSnapshot.docs
+        .map((QueryDocumentSnapshot<Map<String, dynamic>> e) {
+      return EntryModel.fromJson(
+        e.id,
+        e.data(),
+      );
+    }).toList();
   }
 }

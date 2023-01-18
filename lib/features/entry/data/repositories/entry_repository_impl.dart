@@ -15,7 +15,7 @@ class EntryRepositoryImpl implements EntryRepository {
     required Entry entryToSave,
     bool isNew = false,
   }) async {
-    return await _datasource.saveEntry(
+    return _datasource.saveEntry(
       entry: entryToSave,
       isNew: isNew,
     );
@@ -23,14 +23,14 @@ class EntryRepositoryImpl implements EntryRepository {
 
   @override
   Future<ResponseResult<List<Entry>>> getEntries() async {
-    return await _datasource.getEntries();
+    return _datasource.getEntries();
   }
 
   @override
   Future<ResponseResult<void>> delete({
     required String entryID,
   }) async =>
-      await _datasource.remove(entryID: entryID);
+      _datasource.remove(entryID: entryID);
 
   @override
   Future<ResponseResult> setStatus({
@@ -38,4 +38,8 @@ class EntryRepositoryImpl implements EntryRepository {
     required EntryStatus status,
   }) =>
       _datasource.setStatus(entryID: entryID, status: status);
+
+  @override
+  Future<ResponseResult<List<Entry>>> getTodayEntries() =>
+      _datasource.getTodayEntries();
 }
