@@ -13,4 +13,18 @@ class Spot {
   final int number;
   final SpotType spotType;
   final SpotStatus spotStatus;
+
+  factory Spot.fromJson(Map<String, dynamic> data) => Spot(
+        number: data['number'],
+        spotType: data['type'],
+        spotStatus: data['status'],
+      );
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'number': number,
+      'type': spotType.toJson(),
+      'status': spotStatus.toJson(),
+    };
+  }
 }
