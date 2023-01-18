@@ -1,4 +1,4 @@
-enum SpotFormAction {
+enum RespositoryAction {
   edit,
   add,
 }
