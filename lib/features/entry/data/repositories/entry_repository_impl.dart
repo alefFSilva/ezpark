@@ -19,4 +19,9 @@ class EntryRepositoryImpl implements EntryRepository {
       isNew: isNew,
     );
   }
+
+  @override
+  Future<ResponseResult<List<Entry>>> getEntries() async {
+    return await _datasource.getEntries();
+  }
 }

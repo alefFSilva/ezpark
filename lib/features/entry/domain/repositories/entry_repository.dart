@@ -7,4 +7,6 @@ abstract class EntryRepository {
     required Entry entryToSave,
     bool isNew = false,
   });
+
+  Future<ResponseResult<List<Entry>>> getEntries();
 }

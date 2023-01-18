@@ -241,6 +241,7 @@ class _NewEntryFormState extends ConsumerState<_NewEntryForm> {
             vehiclePlate: _vehiclePlateController.text,
             vehicleColor: _selectedColor!,
             spot: _selectedSpot!,
+            entryTime: DateTime.now(),
           ),
           respositoryAction: RespositoryAction.add,
         )

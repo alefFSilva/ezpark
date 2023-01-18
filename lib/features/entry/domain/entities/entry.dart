@@ -9,6 +9,7 @@ class Entry {
     required this.vehiclePlate,
     required this.vehicleColor,
     required this.spot,
+    required this.entryTime,
   });
 
   final String id;
@@ -16,14 +17,5 @@ class Entry {
   final String vehiclePlate;
   final VehicleColorsOption vehicleColor;
   final Spot spot;
-
-  factory Entry.fromJson(Map<String, dynamic> data) => Entry(
-        id: data['id'],
-        vehicleName: data['vehicleName'],
-        vehiclePlate: data['vehiclePlate'],
-        vehicleColor: data['vehicleColor'],
-        spot: Spot.fromJson(
-          data['spot'],
-        ),
-      );
+  final DateTime entryTime;
 }

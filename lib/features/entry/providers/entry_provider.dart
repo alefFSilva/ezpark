@@ -1,4 +1,5 @@
 import 'package:ezpark/features/entry/domain/repositories/entry_repository.dart';
+import 'package:ezpark/features/entry/providers/entries_list_provider.dart';
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,7 +22,7 @@ class SaveSpotFormNotifier extends StateNotifier<AsyncValue<ResponseResult>> {
   SaveSpotFormNotifier({
     required EntryRepository spotRepository,
     required StateNotifierProviderRef ref,
-  })  : _spotRepository = spotRepository,
+  })  : _entryRepository = spotRepository,
         _ref = ref,
         super(
           AsyncValue<ResponseResult>.data(
@@ -29,7 +30,7 @@ class SaveSpotFormNotifier extends StateNotifier<AsyncValue<ResponseResult>> {
           ),
         );
 
-  final EntryRepository _spotRepository;
+  final EntryRepository _entryRepository;
   final StateNotifierProviderRef _ref;
 
   void setState(AsyncValue<ResponseResult> newState) => state = newState;
@@ -40,11 +41,22 @@ class SaveSpotFormNotifier extends StateNotifier<AsyncValue<ResponseResult>> {
   }) async {
     state = const AsyncValue.loading();
 
-    final result = await _spotRepository.saveEntry(
+    final result = await _entryRepository.saveEntry(
       entryToSave: entryToSave,
       isNew: respositoryAction == RespositoryAction.add,
     );
 
+    _ref.invalidate(avaliableSpotsListProvider);
+    _ref.invalidate(entriesListProvider);
+    state = AsyncValue<ResponseResult<void>>.data(result);
+  }
+
+  Future<void> getEntries({
+    required Entry entryToSave,
+    required RespositoryAction respositoryAction,
+  }) async {
+    state = const AsyncValue.loading();
+    final result = await _entryRepository.getEntries();
     _ref.invalidate(avaliableSpotsListProvider);
     state = AsyncValue<ResponseResult<void>>.data(result);
   }

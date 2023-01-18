@@ -1,4 +1,5 @@
 import 'package:ezpark/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:ezpark/features/entry/presentation/pages/entries_list_page.dart';
 import 'package:ezpark/features/entry/presentation/pages/new_entry_page.dart';
 import 'package:ezpark/features/spots/presentation/pages/spots_list_page.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +9,8 @@ import '../initializer/widgets/initializer.dart';
 enum Routes {
   dashboard('/dashboard'),
   spotsList('/spotslist'),
-  newEntryPage('/newEntryPage');
+  newEntryPage('/newEntryPage'),
+  entriesListPage('/entriesListPage');
 
   const Routes(this.description);
   final String description;
@@ -32,6 +34,10 @@ final router = GoRouter(
     GoRoute(
       path: Routes.newEntryPage.description,
       builder: (_, __) => const NewEntryPage(),
+    ),
+    GoRoute(
+      path: Routes.entriesListPage.description,
+      builder: (_, __) => const EntriesListPage(),
     )
   ],
 );
