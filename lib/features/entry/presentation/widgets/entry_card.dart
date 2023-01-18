@@ -139,7 +139,6 @@ class EntryCard extends ConsumerWidget {
                 )
                 .then(
               (value) {
-                ref.read(entriesListProvider.notifier).refresh();
                 showSnackBarMessage(
                   context,
                   message: 'Entrada deletada com sucesso',

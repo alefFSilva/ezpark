@@ -3,6 +3,7 @@ import 'package:ezpark/core/sizes/spacings.dart';
 import 'package:ezpark/core/theme/components/custom_alert_dialog.dart';
 import 'package:ezpark/core/theme/components/custom_page_scaffold.dart';
 import 'package:ezpark/core/theme/components/no_data_founded.dart';
+import 'package:ezpark/core/theme/components/snackbar.dart';
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -148,10 +149,18 @@ class _SpotCard extends ConsumerWidget {
         return CustomAlertDialog(
           message: 'Deseja apagar a vaga?',
           onPressed: () {
-            ref.read(spotsListProvider.notifier).delete(
+            ref
+                .read(spotsListProvider.notifier)
+                .delete(
                   spotNumber: spot.number,
-                );
-            Navigator.pop(context);
+                )
+                .then(
+              (value) {
+                showSnackBarMessage(context,
+                    message: 'Vaga removida com sucesso!');
+                Navigator.pop(context);
+              },
+            );
           },
         );
       },

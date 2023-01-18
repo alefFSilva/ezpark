@@ -36,6 +36,7 @@ class SpotsListNotifier extends AsyncNotifier<List<Spot>> {
     SpotStatus? spotStatus,
   }) async {
     final response = await getSpots();
+    ref.invalidate(spotsCounterProvider);
     state = AsyncValue.data(response);
   }
 
