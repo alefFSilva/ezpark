@@ -46,16 +46,6 @@ class SaveSpotFormNotifier extends StateNotifier<AsyncValue<ResponseResult>> {
     );
 
     _ref.invalidate(avaliableSpotsListProvider);
-    // _ref.invalidate(spotsListProvider);
-
     state = AsyncValue<ResponseResult<void>>.data(result);
-
-    //  ref.read(entryNotifierProvider.notifier).setState(
-    //           AsyncValue.data(
-    //             ResponseResult.onSuccess(
-    //               data: ref.read(avaliableSpotsListProvider),
-    //             ),
-    //           ),
-    //         );
   }
 }
