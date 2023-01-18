@@ -1,8 +1,9 @@
 import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
 import 'package:ezpark/core/route/router.dart';
+import 'package:ezpark/core/theme/components/custom_text_form_field.dart';
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
 import 'package:ezpark/features/spots/enums/spot_status.dart';
-import 'package:ezpark/features/spots/providers/add_spot_provider.dart';
+import 'package:ezpark/features/spots/providers/save_spot_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,8 +14,8 @@ import '../../../core/theme/colors/colors.dart';
 import '../../../core/theme/components/loading/loading_overlay.dart';
 import '../domain/entities/spot.dart';
 import '../enums/spot_type.dart';
-import '../providers/add_spot_provider.dart';
-import 'pages/spots_list_provider.dart';
+import '../providers/save_spot_provider.dart';
+import '../providers/spots_list_provider.dart';
 
 class SpotForm extends ConsumerStatefulWidget {
   const SpotForm({
@@ -62,7 +63,7 @@ class _SpotFormState extends ConsumerState<SpotForm> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Flexible(
-              child: _TextFormField(
+              child: CustomTextFormField(
                 controller: _spotDescription,
                 labelText: 'Número da vaga',
                 onChanged: null,
@@ -254,55 +255,5 @@ class _SpotFormState extends ConsumerState<SpotForm> {
         .then(
           (value) => ref.read(spotsListProvider.notifier).refresh(),
         );
-  }
-}
-
-class _TextFormField extends StatelessWidget {
-  const _TextFormField({
-    Key? key,
-    required this.controller,
-    required this.onChanged,
-    required this.labelText,
-    this.keyboardType,
-    this.validator,
-  }) : super(key: key);
-
-  final TextEditingController? controller;
-  final ValueChanged<String>? onChanged;
-  final String? Function(String? p1)? validator;
-  final String labelText;
-  final TextInputType? keyboardType;
-
-  @override
-  Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
-    return TextFormField(
-      controller: controller,
-      onChanged: onChanged,
-      validator: validator,
-      keyboardType: keyboardType,
-      cursorColor: AppColors.neutral50,
-      textAlign: TextAlign.center,
-      style: textTheme.displayMedium!.copyWith(
-        color: AppColors.neutral400,
-      ),
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.zero,
-        labelText: labelText,
-        errorStyle: TextStyle(
-          color: colorScheme.error,
-        ),
-        labelStyle: textTheme.labelSmall!.copyWith(
-          color: AppColors.neutral500,
-        ),
-        focusedErrorBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: colorScheme.error,
-          ),
-        ),
-      ),
-    );
   }
 }
