@@ -1,5 +1,6 @@
 import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
 import 'package:ezpark/core/route/router.dart';
+import 'package:ezpark/core/theme/components/custom_page_scaffold.dart';
 import 'package:ezpark/features/entry/providers/entries_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,12 +15,8 @@ class EntriesListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Entradas'),
-        elevation: 3,
-        shadowColor: Colors.black,
-      ),
+    return CustomPageScaffold(
+      pageTitle: 'Entradas',
       body: Consumer(
         builder: (_, WidgetRef ref, __) => EntriesList(
           entriesAsyncValues: ref.watch(

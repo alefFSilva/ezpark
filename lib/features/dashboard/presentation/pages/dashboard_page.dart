@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/route/router.dart';
+import '../../../../core/theme/components/custom_page_scaffold.dart';
 
 class DashBoardPage extends StatelessWidget {
   const DashBoardPage({Key? key}) : super(key: key);
@@ -24,12 +25,8 @@ class DashBoardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('EzPark'),
-        elevation: 3,
-        shadowColor: Colors.black,
-      ),
+    return CustomPageScaffold(
+      pageTitle: 'EzPark',
       body: Padding(
         padding: const EdgeInsets.all(Spacings.xs),
         child: Column(

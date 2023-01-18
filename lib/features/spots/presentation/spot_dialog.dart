@@ -19,25 +19,23 @@ class SpotDialog extends StatelessWidget {
   final RespositoryAction spotFormAction;
 
   @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        '${spotFormAction == RespositoryAction.add ? 'Nova' : 'Editar'} vaga',
-        textAlign: TextAlign.center,
-        style: Theme.of(context)
-            .textTheme
-            .headlineMedium!
-            .copyWith(color: Theme.of(context).colorScheme.primary),
-      ),
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: Spacings.m.width,
-        vertical: Spacings.xxs.height,
-      ),
-      content: SpotForm(
-        number: number,
-        spotType: spotType,
-        spotFormAction: spotFormAction,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => AlertDialog(
+        title: Text(
+          '${spotFormAction == RespositoryAction.add ? 'Nova' : 'Editar'} vaga',
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .textTheme
+              .headlineMedium!
+              .copyWith(color: Theme.of(context).colorScheme.primary),
+        ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: Spacings.m.width,
+          vertical: Spacings.xxs.height,
+        ),
+        content: SpotForm(
+          number: number,
+          spotType: spotType,
+          spotFormAction: spotFormAction,
+        ),
+      );
 }

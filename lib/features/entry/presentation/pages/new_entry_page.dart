@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/response/entities/response_result.dart';
 import '../../../../core/route/router.dart';
+import '../../../../core/theme/components/custom_page_scaffold.dart';
 import '../../../../core/theme/components/custom_text_form_field.dart';
 import '../../../spots/domain/entities/spot.dart';
 import '../../domain/entities/entry.dart';
@@ -24,13 +25,9 @@ class NewEntryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nova entrada'),
-        elevation: 3,
-        shadowColor: Colors.black,
-      ),
-      body: const _NewEntryForm(),
+    return const CustomPageScaffold(
+      pageTitle: 'Nova entrada',
+      body: _NewEntryForm(),
     );
   }
 }
