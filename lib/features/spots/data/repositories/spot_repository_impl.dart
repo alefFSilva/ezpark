@@ -1,4 +1,5 @@
 import 'package:ezpark/core/network/response/entities/response_result.dart';
+import 'package:ezpark/features/spots/enums/spot_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/spot.dart';
@@ -25,8 +26,10 @@ class SpotRepositoryImpl implements SpotRepository {
       await _datasource.addNew(addSpot);
 
   @override
-  Future<ResponseResult<List<Spot>>> getSpots() async =>
-      await _datasource.getSpots();
+  Future<ResponseResult<List<Spot>>> getSpots({
+    SpotStatus? spotStatus,
+  }) async =>
+      await _datasource.getSpots(spotStatus: spotStatus);
 
   @override
   Future<ResponseResult> remove({
@@ -42,4 +45,14 @@ class SpotRepositoryImpl implements SpotRepository {
       spot: spotToSave,
     );
   }
+
+  @override
+  Future<ResponseResult> setStatus({
+    required int spotNumber,
+    required SpotStatus spotStatus,
+  }) =>
+      _datasource.setStatus(
+        spotNumber: spotNumber,
+        spotStatus: spotStatus,
+      );
 }
