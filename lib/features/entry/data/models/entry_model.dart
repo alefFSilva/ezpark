@@ -13,8 +13,9 @@ class EntryModel extends Entry {
     required super.entryTime,
   });
 
-  factory EntryModel.fromJson(Map<String, dynamic> data) => EntryModel(
-        id: data['id'] ?? '',
+  factory EntryModel.fromJson(String id, Map<String, dynamic> data) =>
+      EntryModel(
+        id: id,
         vehicleName: data['vehicleName'],
         vehiclePlate: data['vehiclePlate'],
         vehicleColor: VehicleColorsOption.fromJson(

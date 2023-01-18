@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/entities/entry.dart';
 
 final entriesListProvider =
-    AsyncNotifierProvider<SpotsListNotifier, List<Entry>>(
-  () => SpotsListNotifier(),
+    AsyncNotifierProvider<EntriesListNotifier, List<Entry>>(
+  () => EntriesListNotifier(),
 );
 
-class SpotsListNotifier extends AsyncNotifier<List<Entry>> {
-  SpotsListNotifier();
+class EntriesListNotifier extends AsyncNotifier<List<Entry>> {
+  EntriesListNotifier();
 
   late final EntryRepository _repository;
 
@@ -28,7 +28,24 @@ class SpotsListNotifier extends AsyncNotifier<List<Entry>> {
     if (!response.success) {
       state = AsyncValue.error(response.errorMessage!, StackTrace.current);
     }
-
     return response.data!;
+  }
+
+  Future<void> refresh() async {
+    final response = await getEntries();
+    state = AsyncValue.data(response);
+  }
+
+  Future<void> delete({
+    required String entryId,
+  }) async {
+    state = const AsyncValue.loading();
+    final response = await _repository.delete(entryID: entryId);
+    response.success
+        ? refresh()
+        : AsyncValue.error(
+            response.errorMessage!,
+            StackTrace.current,
+          );
   }
 }

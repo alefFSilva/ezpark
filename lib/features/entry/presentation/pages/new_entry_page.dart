@@ -2,13 +2,16 @@ import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
 import 'package:ezpark/core/sizes/spacings.dart';
 import 'package:ezpark/core/theme/colors/colors.dart';
 import 'package:ezpark/core/theme/components/snackbar.dart';
+import 'package:ezpark/features/entry/providers/entries_list_provider.dart';
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
 import 'package:ezpark/features/spots/enums/spot_status.dart';
 import 'package:ezpark/features/spots/providers/spots_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/response/entities/response_result.dart';
+import '../../../../core/route/router.dart';
 import '../../../../core/theme/components/custom_text_form_field.dart';
 import '../../../spots/domain/entities/spot.dart';
 import '../../domain/entities/entry.dart';
@@ -251,6 +254,8 @@ class _NewEntryFormState extends ConsumerState<_NewEntryForm> {
               spotNumber: _selectedSpot!.number,
               spotStatus: SpotStatus.occupied,
             );
+        ref.invalidate(entriesListProvider);
+        context.replace(Routes.entriesListPage.description);
       },
     );
   }
@@ -260,7 +265,6 @@ class _NewEntryFormState extends ConsumerState<_NewEntryForm> {
       entryNotifierProvider,
       (_, state) {
         if (state.value != null && state.value!.success) {
-          Navigator.pop(context);
           showSnackBarMessage(
             context,
             message: 'Entrada cadastrada com sucesso!',

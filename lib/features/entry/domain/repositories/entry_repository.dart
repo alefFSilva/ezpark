@@ -9,4 +9,7 @@ abstract class EntryRepository {
   });
 
   Future<ResponseResult<List<Entry>>> getEntries();
+  Future<ResponseResult<void>> delete({
+    required String entryID,
+  });
 }

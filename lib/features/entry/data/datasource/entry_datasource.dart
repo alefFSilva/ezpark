@@ -11,13 +11,16 @@ abstract class EntryDatasource {
     bool isNew = false,
   });
   Future<ResponseResult<List<Entry>>> getEntries();
+  Future<ResponseResult> remove({
+    required String entryID,
+  });
 }
 
 class EntryDatasourceImpl with FireStoreMethods implements EntryDatasource {
-  String get _spotsCollectionDescription => 'entries';
+  String get _entriesCollectionDescription => 'entries';
   CollectionReference<Map<String, dynamic>> get _entryCollectionRef =>
       getCollectionReference(
-        collectionName: _spotsCollectionDescription,
+        collectionName: _entriesCollectionDescription,
       );
 
   @override
@@ -61,13 +64,33 @@ class EntryDatasourceImpl with FireStoreMethods implements EntryDatasource {
 
   @override
   Future<ResponseResult<List<Entry>>> getEntries() async {
-    final spotsSnapshot = await _entryCollectionRef.get();
-    final spotsList = spotsSnapshot.docs.map((e) {
-      return EntryModel.fromJson(e.data());
+    final entriesSnapshot = await _entryCollectionRef.get();
+    final entriessList = entriesSnapshot.docs
+        .map((QueryDocumentSnapshot<Map<String, dynamic>> e) {
+      return EntryModel.fromJson(
+        e.id,
+        e.data(),
+      );
     }).toList();
 
     return ResponseResult<List<Entry>>.onSuccess(
-      data: spotsList,
+      data: entriessList,
     );
+  }
+
+  @override
+  Future<ResponseResult> remove({
+    required String entryID,
+  }) async {
+    bool hasError = false;
+    await deleteById(
+      collectionRef: _entryCollectionRef,
+      id: entryID,
+      onError: () => hasError = true,
+    );
+
+    return hasError
+        ? ResponseResult.onError(errorMessage: 'Erro ao deletar o entry')
+        : ResponseResult.onSuccess();
   }
 }

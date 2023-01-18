@@ -75,4 +75,11 @@ mixin FireStoreMethods {
       },
     );
   }
+
+  Future<void> deleteById({
+    required CollectionReference<Map<String, dynamic>> collectionRef,
+    required String id,
+    Function? onError,
+  }) async =>
+      await collectionRef.doc(id).delete();
 }
