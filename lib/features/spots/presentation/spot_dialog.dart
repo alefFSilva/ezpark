@@ -16,13 +16,13 @@ class SpotDialog extends StatelessWidget {
 
   final int? number;
   final SpotType? spotType;
-  final SpotFormAction spotFormAction;
+  final RespositoryAction spotFormAction;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        '${spotFormAction == SpotFormAction.add ? 'Nova' : 'Editar'} vaga',
+        '${spotFormAction == RespositoryAction.add ? 'Nova' : 'Editar'} vaga',
         textAlign: TextAlign.center,
         style: Theme.of(context)
             .textTheme

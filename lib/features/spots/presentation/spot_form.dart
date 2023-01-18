@@ -12,6 +12,7 @@ import '../../../core/network/response/entities/response_result.dart';
 import '../../../core/sizes/spacings.dart';
 import '../../../core/theme/colors/colors.dart';
 import '../../../core/theme/components/loading/loading_overlay.dart';
+import '../../../core/theme/components/snackbar.dart';
 import '../domain/entities/spot.dart';
 import '../enums/spot_type.dart';
 import '../providers/save_spot_provider.dart';
@@ -27,7 +28,7 @@ class SpotForm extends ConsumerStatefulWidget {
 
   final int? number;
   final SpotType? spotType;
-  final SpotFormAction spotFormAction;
+  final RespositoryAction spotFormAction;
 
   @override
   ConsumerState<SpotForm> createState() => _SpotFormState();
@@ -198,46 +199,28 @@ class _SpotFormState extends ConsumerState<SpotForm> {
           if (!state.isLoading &&
               (state.value != null && !state.value!.success)) {
             _toggleLoading();
-            _showSnackBarMessage(
+            showSnackBarMessage(
+              context,
               message: state.value!.errorMessage!,
               isAnErrorMessage: true,
             );
           } else if (state.value != null && state.value!.success) {
             _toggleLoading();
             Navigator.pop(context);
-            if (widget.spotFormAction == SpotFormAction.add) {
+            if (widget.spotFormAction == RespositoryAction.add) {
               context.push(Routes.spotsList.description);
             }
 
             String messageOperation =
-                widget.spotFormAction == SpotFormAction.add
+                widget.spotFormAction == RespositoryAction.add
                     ? 'cadastrada'
                     : 'editada';
-            _showSnackBarMessage(
+            showSnackBarMessage(
+              context,
               message: 'Vaga $messageOperation com sucesso!',
             );
           }
         },
-      );
-
-  void _showSnackBarMessage({
-    required String message,
-    bool isAnErrorMessage = false,
-  }) =>
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: isAnErrorMessage
-              ? Theme.of(context).colorScheme.error
-              : Theme.of(context).colorScheme.primary,
-          content: Text(
-            message,
-            style: TextStyle(
-              color: isAnErrorMessage
-                  ? Theme.of(context).colorScheme.onError
-                  : Theme.of(context).colorScheme.onPrimary,
-            ),
-          ),
-        ),
       );
 
   void _saveSpot() {
