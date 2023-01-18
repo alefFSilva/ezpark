@@ -137,8 +137,8 @@ class _NewEntryFormState extends ConsumerState<_NewEntryForm> {
                     for (final colorOption in VehicleColorsOption.values)
                       DropdownMenuItem(
                         value: colorOption,
-                        child: _DropdownCarColorItem(
-                          carColorsOption: colorOption,
+                        child: _DropdownVehicleColorItem(
+                          vehicleColorsOption: colorOption,
                         ),
                       ),
                   ],
@@ -283,20 +283,20 @@ class _NewEntryFormState extends ConsumerState<_NewEntryForm> {
   }
 }
 
-class _DropdownCarColorItem extends StatelessWidget {
-  const _DropdownCarColorItem({
+class _DropdownVehicleColorItem extends StatelessWidget {
+  const _DropdownVehicleColorItem({
     Key? key,
-    required this.carColorsOption,
+    required this.vehicleColorsOption,
   }) : super(key: key);
 
-  final VehicleColorsOption carColorsOption;
+  final VehicleColorsOption vehicleColorsOption;
 
   @override
   Widget build(BuildContext context) {
     return _DropdownItemLeadingIcon(
-      description: carColorsOption.description,
+      description: vehicleColorsOption.description,
       leadingIcon: Icons.circle,
-      leadingIconColor: carColorsOption.color,
+      leadingIconColor: vehicleColorsOption.color,
     );
   }
 }
