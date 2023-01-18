@@ -57,6 +57,7 @@ class _AddNewEntryCard extends StatelessWidget {
 
     return _DashboardCard(
       title: '',
+      onTap: () => context.push(Routes.newEntryPage.description),
       child: Column(
         children: [
           Icon(
@@ -164,7 +165,7 @@ class _RegisterNewSpotCard extends StatelessWidget {
         context: context,
         builder: (context) {
           return const SpotDialog(
-            spotFormAction: SpotFormAction.add,
+            spotFormAction: RespositoryAction.add,
           );
         },
       ),
