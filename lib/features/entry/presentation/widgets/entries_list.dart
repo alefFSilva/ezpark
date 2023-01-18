@@ -1,47 +1,31 @@
 import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
-import 'package:ezpark/features/report/providers/today_report_entries_provider.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/sizes/spacings.dart';
-import '../../../entry/domain/entities/entry.dart';
-import '../../../entry/presentation/widgets/entry_card.dart';
+import '../../../../core/theme/colors/colors.dart';
+import '../../domain/entities/entry.dart';
+import 'entry_card.dart';
 
-class ReportPage extends StatelessWidget {
-  const ReportPage({Key? key}) : super(key: key);
+class EntriesList extends ConsumerWidget {
+  const EntriesList({
+    required AsyncValue<List<Entry>> entriesAsyncValues,
+    super.key,
+  }) : _entriesAsyncValues = entriesAsyncValues;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Entradas do dia'),
-        elevation: 3,
-        shadowColor: Colors.black,
-      ),
-      body: const _EntriesList(),
-    );
-  }
-}
-
-@immutable
-class _EntriesList extends ConsumerWidget {
-  const _EntriesList();
-
+  final AsyncValue<List<Entry>> _entriesAsyncValues;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entriesProvider = ref.watch(todayEntriesReportProvider);
+    final TextTheme textTheme = Theme.of(context).textTheme;
 
-    return entriesProvider.when(
+    return _entriesAsyncValues.when(
       data: (List<Entry> entries) {
         return entries.isNotEmpty
             ? ListView(
                 padding: const EdgeInsets.all(Spacings.m),
                 children: [
-                  for (final entry in entries)
-                    EntryCard(
-                      entry: entry,
-                      hideButtons: true,
-                    ),
+                  for (final entry in entries) EntryCard(entry: entry),
                 ],
               )
             : Center(
@@ -63,11 +47,20 @@ class _EntriesList extends ConsumerWidget {
                 ),
               );
       },
-      loading: () {
-        return const Center(child: CircularProgressIndicator());
-      },
       error: (error, stackTrace) {
-        return const SizedBox.shrink();
+        return Center(
+          child: Text(
+            'Ops, algum erro aconteceu',
+            style: textTheme.bodySmall!.copyWith(
+              color: AppColors.supportError,
+            ),
+          ),
+        );
+      },
+      loading: () {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }

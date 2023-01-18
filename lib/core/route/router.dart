@@ -4,7 +4,7 @@ import 'package:ezpark/features/entry/presentation/pages/new_entry_page.dart';
 import 'package:ezpark/features/spots/presentation/pages/spots_list_page.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/report/presentation/pages/report_page.dart';
+import '../../features/entry/presentation/pages/today_entries_report_page.dart';
 import '../initializer/widgets/initializer.dart';
 
 enum Routes {
@@ -43,7 +43,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: Routes.reportPage.description,
-      builder: (_, __) => const ReportPage(),
+      builder: (_, __) => const TodayEntriesReportPage(),
     )
   ],
 );
