@@ -95,7 +95,7 @@ class _SpotList extends ConsumerWidget {
                                 onPressed: () => showDialog(
                                   context: context,
                                   builder: (_) => SpotDialog(
-                                    spotFormAction: SpotFormAction.edit,
+                                    spotFormAction: RespositoryAction.edit,
                                     number: spot.number,
                                     spotType: spot.spotType,
                                   ),
