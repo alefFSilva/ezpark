@@ -32,7 +32,7 @@ class DashBoardPage extends StatelessWidget {
         child: Column(
           children: [
             const Flexible(
-              flex: 2,
+              flex: 3,
               child: _SpotsCard(),
             ),
             Flexible(
@@ -64,25 +64,13 @@ class _AddNewEntryCard extends StatelessWidget {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return _DashboardCard(
-      title: '',
       onTap: () => context.push(Routes.newEntryPage.description),
-      child: Column(
-        children: [
-          Icon(
-            Icons.directions_car_outlined,
-            color: colorScheme.primary.withOpacity(.7),
-            size: 44.width,
-          ),
-          const SizedBox(
-            height: Spacings.xs,
-          ),
-          Text(
-            'Nova entrada',
-            style: textTheme.displayMedium!.copyWith(
-              color: colorScheme.primary,
-            ),
-          )
-        ],
+      icon: Icons.directions_car_outlined,
+      content: Text(
+        'Nova entrada',
+        style: textTheme.displayMedium!.copyWith(
+          color: colorScheme.primary,
+        ),
       ),
     );
   }
@@ -96,27 +84,16 @@ class _EntriesListCard extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return _DashboardCard(
-        title: '',
-        onTap: () => context.push(Routes.entriesListPage.description),
-        child: Column(
-          children: [
-            Icon(
-              Icons.format_list_bulleted_outlined,
-              color: colorScheme.primary.withOpacity(.7),
-              size: 44.width,
-            ),
-            const SizedBox(
-              height: Spacings.xs,
-            ),
-            Text(
-              'Entradas',
-              textAlign: TextAlign.center,
-              style: textTheme.displayMedium!.copyWith(
-                color: colorScheme.primary,
-              ),
-            ),
-          ],
-        ));
+      onTap: () => context.push(Routes.entriesListPage.description),
+      icon: Icons.format_list_bulleted_outlined,
+      content: Text(
+        'Entradas',
+        textAlign: TextAlign.center,
+        style: textTheme.displayMedium!.copyWith(
+          color: colorScheme.primary,
+        ),
+      ),
+    );
   }
 }
 
@@ -132,92 +109,101 @@ class _SpotsCard extends ConsumerWidget {
       children: [
         Expanded(
           child: _DashboardCard(
-            title: 'Vagas',
-            child: Builder(builder: (context) {
-              final spotsCounter = ref.watch(spotsCounterProvider);
-              return spotsCounter.when(
-                loading: () => const CircularProgressIndicator(),
-                error: (err, stack) => Text('Error: $err'),
-                data: (response) {
-                  final counter = response.data;
+            contentAlignment: MainAxisAlignment.start,
+            content: Padding(
+              padding: EdgeInsets.symmetric(horizontal: Spacings.xs.width),
+              child: Builder(builder: (context) {
+                final spotsCounter = ref.watch(spotsCounterProvider);
+                return spotsCounter.when(
+                  loading: () => const CircularProgressIndicator(),
+                  error: (err, stack) => Text('Error: $err'),
+                  data: (response) {
+                    final counter = response.data;
 
-                  return Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const _CardTextLine('Disponíveis:'),
-                          _CardTextLine(
-                            counter!.spotsAvaliable.toString(),
-                            textColor: Colors.green,
-                            fontWeight: FontWeight.w600,
-                            fontSize: FontSize.rg,
+                    return Column(
+                      children: [
+                        Text(
+                          'Vagas',
+                          style: textTheme.titleMedium!.copyWith(
+                            color: colorScheme.primary,
                           ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const _CardTextLine('Ocupadas:'),
-                          _CardTextLine(
-                            counter.spotsOcuppied.toString(),
-                            textColor: Colors.red,
-                            fontWeight: FontWeight.w600,
-                            fontSize: FontSize.rg,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          const _CardTextLine(
-                            'Total de vagas:',
-                          ),
-                          _CardTextLine(
-                            counter.spotTotal.toString(),
-                            textColor: Colors.black,
-                            fontSize: FontSize.rg,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 18.height,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 180.width,
-                            child: OutlinedButton(
-                              onPressed: () => context.push(
-                                Routes.spotsList.description,
-                              ),
-                              style: OutlinedButton.styleFrom(
-                                elevation: 3.height,
-                                shadowColor: Colors.black,
-                                backgroundColor: colorScheme.secondary,
-                                side: BorderSide(
-                                  style: BorderStyle.solid,
-                                  color: colorScheme.primary,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const _CardTextLine('Disponíveis:'),
+                            _CardTextLine(
+                              counter!.spotsAvaliable.toString(),
+                              textColor: Colors.green,
+                              fontWeight: FontWeight.w600,
+                              fontSize: FontSize.lg,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const _CardTextLine('Ocupadas:'),
+                            _CardTextLine(
+                              counter.spotsOcuppied.toString(),
+                              textColor: Colors.red,
+                              fontWeight: FontWeight.w600,
+                              fontSize: FontSize.lg,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            const _CardTextLine(
+                              'Total de vagas:',
+                            ),
+                            _CardTextLine(
+                              counter.spotTotal.toString(),
+                              textColor: Colors.black,
+                              fontSize: FontSize.lg,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 18.height,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 180.width,
+                              child: OutlinedButton(
+                                onPressed: () => context.push(
+                                  Routes.spotsList.description,
                                 ),
-                              ),
-                              child: Text(
-                                'Ver Vagas',
-                                textAlign: TextAlign.center,
-                                style: textTheme.displaySmall!.copyWith(
-                                  color: AppColors.neutral500,
-                                  letterSpacing: 1,
+                                style: OutlinedButton.styleFrom(
+                                  elevation: 3.height,
+                                  shadowColor: Colors.black,
+                                  backgroundColor: colorScheme.secondary,
+                                  side: BorderSide(
+                                    style: BorderStyle.solid,
+                                    color: colorScheme.primary,
+                                  ),
+                                ),
+                                child: Text(
+                                  'Ver Vagas',
+                                  textAlign: TextAlign.center,
+                                  style: textTheme.displaySmall!.copyWith(
+                                    color: AppColors.neutral500,
+                                    letterSpacing: 1,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      )
-                    ],
-                  );
-                },
-              );
-            }),
+                          ],
+                        )
+                      ],
+                    );
+                  },
+                );
+              }),
+            ),
           ),
         ),
       ],
@@ -236,7 +222,6 @@ class _RegisterNewSpotCard extends StatelessWidget {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return _DashboardCard(
-      title: '',
       onTap: () => showDialog(
         context: context,
         builder: (context) {
@@ -245,29 +230,26 @@ class _RegisterNewSpotCard extends StatelessWidget {
           );
         },
       ),
-      child: Column(
+      icon: Icons.add_circle_outline_outlined,
+      content: Column(
         children: [
-          Icon(
-            Icons.add_circle_outline_outlined,
-            color: colorScheme.primary.withOpacity(.7),
-            size: 44.width,
-          ),
-          const SizedBox(
-            height: Spacings.xs,
-          ),
-          Text(
-            'Cadastrar',
-            textAlign: TextAlign.center,
-            style: textTheme.displayMedium!.copyWith(
-              color: colorScheme.primary,
-            ),
-          ),
-          Text(
-            'Nova vaga',
-            textAlign: TextAlign.center,
-            style: textTheme.displayMedium!.copyWith(
-              color: colorScheme.primary,
-            ),
+          Column(
+            children: [
+              Text(
+                'Cadastrar',
+                textAlign: TextAlign.center,
+                style: textTheme.displayMedium!.copyWith(
+                  color: colorScheme.primary,
+                ),
+              ),
+              Text(
+                'Nova vaga',
+                textAlign: TextAlign.center,
+                style: textTheme.displayMedium!.copyWith(
+                  color: colorScheme.primary,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -289,24 +271,13 @@ class _ReportCard extends StatelessWidget {
       onTap: () => context.push(
         Routes.reportPage.description,
       ),
-      child: Column(
-        children: [
-          Icon(
-            Icons.analytics_outlined,
-            color: colorScheme.primary.withOpacity(.7),
-            size: 44.width,
-          ),
-          const SizedBox(
-            height: Spacings.xs,
-          ),
-          Text(
-            'Relatório',
-            textAlign: TextAlign.center,
-            style: textTheme.displayMedium!.copyWith(
-              color: colorScheme.primary,
-            ),
-          ),
-        ],
+      icon: Icons.analytics_outlined,
+      content: Text(
+        'Relatório',
+        textAlign: TextAlign.center,
+        style: textTheme.displayMedium!.copyWith(
+          color: colorScheme.primary,
+        ),
       ),
     );
   }
@@ -336,7 +307,7 @@ class _CardTextLine extends StatelessWidget {
       style: textTheme.labelSmall!.copyWith(
         color: textColor ?? AppColors.neutral500,
         fontWeight: fontWeight,
-        fontSize: fontSize,
+        fontSize: fontSize ?? FontSize.md,
       ),
     );
   }
@@ -344,19 +315,20 @@ class _CardTextLine extends StatelessWidget {
 
 class _DashboardCard extends StatelessWidget {
   const _DashboardCard({
-    this.title,
-    required this.child,
+    required this.content,
+    this.icon,
     this.onTap,
+    this.contentAlignment,
     Key? key,
   }) : super(key: key);
 
-  final String? title;
   final void Function()? onTap;
-  final Widget child;
+  final Widget content;
+  final IconData? icon;
+  final MainAxisAlignment? contentAlignment;
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
@@ -370,17 +342,29 @@ class _DashboardCard extends StatelessWidget {
           ),
           color: Colors.white,
           child: Column(
+            mainAxisAlignment: contentAlignment ?? MainAxisAlignment.center,
             children: [
-              Text(
-                title ?? '',
-                textAlign: TextAlign.center,
-                style:
-                    textTheme.titleMedium!.copyWith(color: colorScheme.primary),
-              ),
               SizedBox(
                 height: Spacings.xxs.height,
               ),
-              child,
+              Column(
+                children: [
+                  Visibility(
+                    visible: icon != null,
+                    child: Icon(
+                      icon,
+                      color: colorScheme.primary.withOpacity(.7),
+                      size: 44.width,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: Spacings.xs,
+                  ),
+                  Align(
+                    child: content,
+                  ),
+                ],
+              ),
             ],
           ),
         ),

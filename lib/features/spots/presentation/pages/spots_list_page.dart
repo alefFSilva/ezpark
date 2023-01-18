@@ -41,7 +41,6 @@ class _SpotList extends ConsumerWidget {
             ? RefreshIndicator(
                 onRefresh: () => ref.read(spotsListProvider.notifier).refresh(),
                 child: ListView(
-                  padding: const EdgeInsets.all(Spacings.m),
                   children: <Widget>[
                     for (final spot in spots) _SpotCard(spot: spot),
                   ],
@@ -76,6 +75,7 @@ class _SpotCard extends ConsumerWidget {
               style: const TextStyle(
                 color: Colors.black,
                 overflow: TextOverflow.ellipsis,
+                fontSize: FontSize.md,
               ),
             ),
             Text(
@@ -93,6 +93,7 @@ class _SpotCard extends ConsumerWidget {
               'Tipo: ${_spot.spotType.description} - ',
               style: const TextStyle(
                 color: Colors.black,
+                fontSize: FontSize.defaultSize,
               ),
             ),
             Icon(_spot.spotType.icon)
