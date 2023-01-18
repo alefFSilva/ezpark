@@ -2,6 +2,7 @@ import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
 import 'package:ezpark/core/sizes/spacings.dart';
 import 'package:ezpark/core/theme/colors/colors.dart';
 import 'package:ezpark/core/theme/components/snackbar.dart';
+import 'package:ezpark/features/entry/enums/entry_status.dart';
 import 'package:ezpark/features/entry/providers/entries_list_provider.dart';
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
 import 'package:ezpark/features/spots/enums/spot_status.dart';
@@ -245,6 +246,8 @@ class _NewEntryFormState extends ConsumerState<_NewEntryForm> {
             vehicleColor: _selectedColor!,
             spot: _selectedSpot!,
             entryTime: DateTime.now(),
+            status: EntryStatus.active,
+            completedTime: null,
           ),
           respositoryAction: RespositoryAction.add,
         )

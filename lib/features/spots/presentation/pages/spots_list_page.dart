@@ -1,11 +1,11 @@
 import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
 import 'package:ezpark/core/sizes/font_size.dart';
 import 'package:ezpark/core/sizes/spacings.dart';
+import 'package:ezpark/core/theme/components/custom_alert_dialog.dart';
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/theme/colors/colors.dart';
 import '../../domain/entities/spot.dart';
 import '../spot_dialog.dart';
 import '../../providers/spots_list_provider.dart';
@@ -40,7 +40,7 @@ class _SpotList extends ConsumerWidget {
         child: CircularProgressIndicator(),
       ),
       error: (error, stackTrace) => Center(
-        child: Text('Deu ruim!'),
+        child: Text('Error!'),
       ),
       data: (List<Spot> spots) {
         return spots.isNotEmpty
@@ -111,8 +111,6 @@ class _SpotList extends ConsumerWidget {
                                 padding: EdgeInsets.zero,
                                 onPressed: () => _showdeleteConfirmationDialog(
                                   context,
-                                  textTheme,
-                                  colorScheme,
                                   ref,
                                   spot,
                                 ),
@@ -146,67 +144,24 @@ class _SpotList extends ConsumerWidget {
     );
   }
 
-  Future<dynamic> _showdeleteConfirmationDialog(BuildContext context,
-      TextTheme textTheme, ColorScheme colorScheme, WidgetRef ref, Spot spot) {
+  Future<dynamic> _showdeleteConfirmationDialog(
+    BuildContext context,
+    WidgetRef ref,
+    Spot spot,
+  ) {
     return showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(
-            'Deseja apagar a vaga?',
-            style: textTheme.titleMedium!.copyWith(
-              color: colorScheme.error,
-            ),
-          ),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(
-                      style: BorderStyle.solid,
-                      color: AppColors.neutral100,
-                    ),
-                  ),
-                  child: Text(
-                    'Cancelar',
-                    style: textTheme.displaySmall!.copyWith(
-                      color: AppColors.neutral100,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: Spacings.m,
-              ),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () => _deleteSpot(context, ref, spot),
-                  style: ElevatedButton.styleFrom(
-                    primary: colorScheme.error,
-                    elevation: 2,
-                    shadowColor: Colors.black,
-                    onPrimary: Theme.of(context).colorScheme.error,
-                  ),
-                  child: Text(
-                    'Apagar',
-                    style: textTheme.displaySmall!.copyWith(
-                      color: AppColors.neutral1,
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+        return CustomAlertDialog(
+          message: 'Deseja apagar a vaga?',
+          onPressed: () {
+            ref.read(spotsListProvider.notifier).delete(
+                  spotNumber: spot.number,
+                );
+            Navigator.pop(context);
+          },
         );
       },
     );
-  }
-
-  void _deleteSpot(BuildContext context, WidgetRef ref, Spot spot) {
-    Navigator.pop(context);
-    ref.read(spotsListProvider.notifier).delete(spotNumber: spot.number);
   }
 }

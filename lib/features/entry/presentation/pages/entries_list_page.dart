@@ -1,12 +1,16 @@
 import 'package:ezpark/core/resposivity/extensions/resizer_extension.dart';
+import 'package:ezpark/core/route/router.dart';
 import 'package:ezpark/core/theme/colors/colors.dart';
 import 'package:ezpark/core/theme/components/snackbar.dart';
+import 'package:ezpark/features/entry/enums/entry_status.dart';
 import 'package:ezpark/features/entry/providers/entries_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/sizes/spacings.dart';
+import '../../../../core/theme/components/custom_alert_dialog.dart';
 import '../../domain/entities/entry.dart';
 
 class EntriesListPage extends StatelessWidget {
@@ -14,6 +18,8 @@ class EntriesListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Entradas'),
@@ -21,6 +27,24 @@ class EntriesListPage extends StatelessWidget {
         shadowColor: Colors.black,
       ),
       body: const _EntriesList(),
+      floatingActionButton: OutlinedButton(
+        onPressed: () => context.replace(
+          Routes.newEntryPage.description,
+        ),
+        style: OutlinedButton.styleFrom(
+          elevation: 4.height,
+          shadowColor: Colors.black,
+          backgroundColor: colorScheme.secondary,
+          side: BorderSide(
+            style: BorderStyle.solid,
+            color: colorScheme.secondary,
+          ),
+        ),
+        child: Text(
+          'Nova entrada',
+          style: textTheme.labelMedium!.copyWith(color: colorScheme.primary),
+        ),
+      ),
     );
   }
 }
@@ -103,6 +127,17 @@ class _EntriesListState extends ConsumerState<_EntriesList> {
                                 color: AppColors.neutral400,
                               ),
                             ),
+                            (entry.status == EntryStatus.completed &&
+                                    entry.completedTime != null)
+                                ? Text(
+                                    'Saída: ${DateFormat("dd/MM/yyyy - H:mm").format(
+                                      entry.completedTime!,
+                                    )} ',
+                                    style: textTheme.titleSmall!.copyWith(
+                                      color: AppColors.neutral400,
+                                    ),
+                                  )
+                                : _CompleteEntryButton(entry: entry),
                           ],
                         ),
                         trailing: Row(
@@ -111,21 +146,13 @@ class _EntriesListState extends ConsumerState<_EntriesList> {
                           children: [
                             IconButton(
                               icon: const Icon(
-                                Icons.edit,
-                                color: Colors.grey,
-                              ),
-                              onPressed: () => print(''),
-                              padding: EdgeInsets.zero,
-                              alignment: Alignment.centerRight,
-                            ),
-                            IconButton(
-                              icon: const Icon(
                                 Icons.delete_outline_outlined,
                                 color: Colors.red,
                               ),
                               padding: EdgeInsets.zero,
                               onPressed: () => _showdeleteConfirmationDialog(
                                 entryID: entry.id,
+                                spotNumber: entry.spot.number,
                               ),
                             )
                           ],
@@ -164,79 +191,100 @@ class _EntriesListState extends ConsumerState<_EntriesList> {
 
   Future<dynamic> _showdeleteConfirmationDialog({
     required String entryID,
+    required int spotNumber,
   }) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(
-            'Deseja apagar a entrada?',
-            style: textTheme.titleMedium!.copyWith(
-              color: colorScheme.error,
-            ),
-          ),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(
-                      style: BorderStyle.solid,
-                      color: AppColors.neutral100,
-                    ),
-                  ),
-                  child: Text(
-                    'Cancelar',
-                    style: textTheme.displaySmall!.copyWith(
-                      color: AppColors.neutral100,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: Spacings.m,
-              ),
-              Expanded(
-                child: ElevatedButton(
+        return CustomAlertDialog(
+          message: 'Deseja apagar a entrada?',
+          onPressed: () {
+            ref
+                .read(entriesListProvider.notifier)
+                .delete(
+                  entryId: entryID,
+                  spotNumber: spotNumber,
+                )
+                .then(
+              (value) {
+                ref.read(entriesListProvider.notifier).refresh();
+                showSnackBarMessage(
+                  context,
+                  message: 'Entrada deletada com sucesso',
+                );
+                Navigator.pop(context);
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _CompleteEntryButton extends ConsumerWidget {
+  const _CompleteEntryButton({
+    Key? key,
+    required this.entry,
+  }) : super(key: key);
+
+  final Entry entry;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        OutlinedButton(
+          onPressed: (() {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return CustomAlertDialog(
+                  message: 'Deseja confirmar a saída deste veículo?',
                   onPressed: () {
                     ref
                         .read(entriesListProvider.notifier)
-                        .delete(
-                          entryId: entryID,
+                        .setStatus(
+                          entryID: entry.id,
+                          spotNumber: entry.spot.number,
+                          status: EntryStatus.completed,
                         )
                         .then(
-                      (value) {
-                        ref.read(entriesListProvider.notifier).refresh();
-                        showSnackBarMessage(
-                          context,
-                          message: 'Entrada deletada com sucesso',
-                        );
+                      (response) {
+                        response.success
+                            ? showSnackBarMessage(context,
+                                message: 'Saída realizada com sucesso')
+                            : showSnackBarMessage(
+                                context,
+                                message: response.errorMessage!,
+                              );
                         Navigator.pop(context);
                       },
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    primary: colorScheme.error,
-                    elevation: 2,
-                    shadowColor: Colors.black,
-                    onPrimary: Theme.of(context).colorScheme.error,
-                  ),
-                  child: Text(
-                    'Apagar',
-                    style: textTheme.displaySmall!.copyWith(
-                      color: AppColors.neutral1,
-                    ),
-                  ),
-                ),
-              )
-            ],
+                );
+              },
+            );
+          }),
+          style: OutlinedButton.styleFrom(
+            elevation: 1.height,
+            shadowColor: Colors.black,
+            backgroundColor: colorScheme.secondary,
+            side: BorderSide(
+              style: BorderStyle.solid,
+              color: colorScheme.secondary,
+            ),
           ),
-        );
-      },
+          child: Text(
+            'Registrar saída',
+            style: textTheme.bodySmall!.copyWith(
+              color: colorScheme.error,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

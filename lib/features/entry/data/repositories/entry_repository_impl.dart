@@ -1,7 +1,7 @@
 import 'package:ezpark/features/entry/data/datasource/entry_datasource.dart';
 import 'package:ezpark/features/entry/domain/entities/entry.dart';
 import 'package:ezpark/core/network/response/entities/response_result.dart';
-import 'package:flutter/material.dart';
+import 'package:ezpark/features/entry/enums/entry_status.dart';
 import '../../domain/repositories/entry_repository.dart';
 
 class EntryRepositoryImpl implements EntryRepository {
@@ -31,4 +31,11 @@ class EntryRepositoryImpl implements EntryRepository {
     required String entryID,
   }) async =>
       await _datasource.remove(entryID: entryID);
+
+  @override
+  Future<ResponseResult> setStatus({
+    required String entryID,
+    required EntryStatus status,
+  }) =>
+      _datasource.setStatus(entryID: entryID, status: status);
 }

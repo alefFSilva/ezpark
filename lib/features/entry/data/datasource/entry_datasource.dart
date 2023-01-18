@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezpark/core/firebase/firestore_methods.dart';
 import 'package:ezpark/features/entry/data/models/entry_model.dart';
+import 'package:ezpark/features/entry/enums/entry_status.dart';
 
 import '../../../../core/network/response/entities/response_result.dart';
 import '../../domain/entities/entry.dart';
@@ -13,6 +14,10 @@ abstract class EntryDatasource {
   Future<ResponseResult<List<Entry>>> getEntries();
   Future<ResponseResult> remove({
     required String entryID,
+  });
+  Future<ResponseResult<void>> setStatus({
+    required String entryID,
+    required EntryStatus status,
   });
 }
 
@@ -29,6 +34,17 @@ class EntryDatasourceImpl with FireStoreMethods implements EntryDatasource {
     bool isNew = false,
   }) async {
     String? docID;
+
+    final entryData = {
+      'vehicleName': entry.vehicleName,
+      'spot': entry.spot.toJson(),
+      'vehicleColor': entry.vehicleColor.toJson(),
+      'vehiclePlate': entry.vehiclePlate,
+      'entryTime': DateTime.now().toString(),
+      'status': entry.status.toJson(),
+      'completedTime': null,
+    };
+
     if (!isNew) {
       docID = await getDocID(
         collectionRef: _entryCollectionRef,
@@ -40,24 +56,9 @@ class EntryDatasourceImpl with FireStoreMethods implements EntryDatasource {
         return ResponseResult.onError(errorMessage: 'Vaga não encontrada');
       }
 
-      await _entryCollectionRef.doc(docID).update(
-        {
-          'vehicleName': entry.vehicleName,
-          'type': entry.spot.toJson(),
-          'status': entry.vehicleColor.toJson(),
-          'vehiclePlate': entry.vehiclePlate
-        },
-      );
+      await _entryCollectionRef.doc(docID).update(entryData);
     } else {
-      await _entryCollectionRef.add(
-        {
-          'vehicleName': entry.vehicleName,
-          'spot': entry.spot.toJson(),
-          'vehicleColor': entry.vehicleColor.toJson(),
-          'vehiclePlate': entry.vehiclePlate,
-          'entryTime': DateTime.now().toString(),
-        },
-      );
+      await _entryCollectionRef.add(entryData);
     }
     return ResponseResult.onSuccess();
   }
@@ -92,5 +93,23 @@ class EntryDatasourceImpl with FireStoreMethods implements EntryDatasource {
     return hasError
         ? ResponseResult.onError(errorMessage: 'Erro ao deletar o entry')
         : ResponseResult.onSuccess();
+  }
+
+  @override
+  Future<ResponseResult<void>> setStatus({
+    required String entryID,
+    required EntryStatus status,
+  }) async {
+    try {
+      await _entryCollectionRef.doc(entryID).update(
+        {
+          'status': status.toJson(),
+          'completedTime': DateTime.now().toString(),
+        },
+      );
+      return ResponseResult.onSuccess();
+    } catch (_) {
+      return ResponseResult.onError(errorMessage: 'Erro ao registrar a saída.');
+    }
   }
 }
