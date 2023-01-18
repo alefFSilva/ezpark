@@ -11,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/network/response/entities/response_result.dart';
 import '../../../core/sizes/spacings.dart';
 import '../../../core/theme/colors/colors.dart';
-import '../../../core/theme/components/loading/loading_overlay.dart';
 import '../../../core/theme/components/snackbar.dart';
 import '../domain/entities/spot.dart';
 import '../enums/spot_type.dart';
@@ -191,21 +190,18 @@ class _SpotFormState extends ConsumerState<SpotForm> {
     );
   }
 
-  void _toggleLoading() => ref.read(loadingOverlayProvider.notifier).toggle();
   void _setResponseListener(BuildContext context) =>
       ref.listen<AsyncValue<ResponseResult>>(
         spotNotiferProvider,
         (_, state) {
           if (!state.isLoading &&
               (state.value != null && !state.value!.success)) {
-            _toggleLoading();
             showSnackBarMessage(
               context,
               message: state.value!.errorMessage!,
               isAnErrorMessage: true,
             );
           } else if (state.value != null && state.value!.success) {
-            _toggleLoading();
             Navigator.pop(context);
             if (widget.spotFormAction == RespositoryAction.add) {
               context.push(Routes.spotsList.description);
@@ -224,7 +220,6 @@ class _SpotFormState extends ConsumerState<SpotForm> {
       );
 
   void _saveSpot() {
-    _toggleLoading();
     ref
         .read(spotNotiferProvider.notifier)
         .saveSpot(
