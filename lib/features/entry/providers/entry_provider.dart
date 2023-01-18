@@ -1,5 +1,4 @@
 import 'package:ezpark/features/entry/domain/repositories/entry_repository.dart';
-import 'package:ezpark/features/entry/providers/entries_list_provider.dart';
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,8 +45,6 @@ class SaveSpotFormNotifier extends StateNotifier<AsyncValue<ResponseResult>> {
       isNew: respositoryAction == RespositoryAction.add,
     );
 
-    _ref.invalidate(avaliableSpotsListProvider);
-    _ref.invalidate(entriesListProvider);
     state = AsyncValue<ResponseResult<void>>.data(result);
   }
 

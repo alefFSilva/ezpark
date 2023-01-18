@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/firebase/firestore_methods.dart';
 import '../../domain/entities/spot.dart';
+import '../../domain/entities/spots_count.dart';
 import '../../enums/spot_status.dart';
 import '../models/spot_model.dart';
 
@@ -24,6 +25,7 @@ abstract class SpotDatasource {
     required int spotNumber,
     required SpotStatus spotStatus,
   });
+  Future<ResponseResult<SpotsCount>> getSpotsCounter();
 }
 
 class SpotDatasourceImpl with FireStoreMethods implements SpotDatasource {
@@ -147,5 +149,37 @@ class SpotDatasourceImpl with FireStoreMethods implements SpotDatasource {
     ).then(
       (value) => ResponseResult<void>.onSuccess(),
     );
+  }
+
+  @override
+  Future<ResponseResult<SpotsCount>> getSpotsCounter() async {
+    ResponseResult<SpotsCount> result;
+    try {
+      final AggregateQuerySnapshot spotAvaliableSnapshot =
+          await _spotCollectionRef
+              .where('status', isEqualTo: SpotStatus.active.toJson())
+              .count()
+              .get();
+      final AggregateQuerySnapshot spotOcuppiedSnapshot =
+          await _spotCollectionRef
+              .where('status', isEqualTo: SpotStatus.occupied.toJson())
+              .count()
+              .get();
+
+      final int spotAvaliableTotal = spotAvaliableSnapshot.count;
+      final int spotOcuppiedTotal = spotOcuppiedSnapshot.count;
+
+      result = ResponseResult<SpotsCount>.onSuccess(
+        data: SpotsCount(
+          spotsAvaliable: spotAvaliableTotal,
+          spotsOcuppied: spotOcuppiedTotal,
+        ),
+      );
+    } catch (_) {
+      result = ResponseResult.onError(
+        errorMessage: 'Erro ao buscar totais de vagas',
+      );
+    }
+    return result;
   }
 }

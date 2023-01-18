@@ -4,8 +4,10 @@ import 'package:ezpark/core/sizes/spacings.dart';
 import 'package:ezpark/core/theme/colors/colors.dart';
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
 import 'package:ezpark/features/spots/presentation/spot_dialog.dart';
+import 'package:ezpark/features/spots/providers/spots_counter_provider.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/route/router.dart';
@@ -121,90 +123,107 @@ class _EntriesListCard extends StatelessWidget {
   }
 }
 
-class _SpotsCard extends StatelessWidget {
+class _SpotsCard extends ConsumerWidget {
   const _SpotsCard({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-    return _DashboardCard(
-      title: 'Vagas',
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              _CardTextLine('Disponíveis:'),
-              _CardTextLine(
-                '32',
-                textColor: Colors.green,
-                fontWeight: FontWeight.w600,
-                fontSize: FontSize.rg,
-              ),
-            ],
+    return Row(
+      children: [
+        Expanded(
+          child: _DashboardCard(
+            title: 'Vagas',
+            child: Builder(builder: (context) {
+              final spotsCounter = ref.watch(spotsCounterProvider);
+              return spotsCounter.when(
+                loading: () => const CircularProgressIndicator(),
+                error: (err, stack) => Text('Error: $err'),
+                data: (response) {
+                  final counter = response.data;
+
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const _CardTextLine('Disponíveis:'),
+                          _CardTextLine(
+                            counter!.spotsAvaliable.toString(),
+                            textColor: Colors.green,
+                            fontWeight: FontWeight.w600,
+                            fontSize: FontSize.rg,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const _CardTextLine('Ocupadas:'),
+                          _CardTextLine(
+                            counter.spotsOcuppied.toString(),
+                            textColor: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: FontSize.rg,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          const _CardTextLine(
+                            'Total de vagas:',
+                          ),
+                          _CardTextLine(
+                            counter.spotTotal.toString(),
+                            textColor: Colors.black,
+                            fontSize: FontSize.rg,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 18.height,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 180.width,
+                            child: OutlinedButton(
+                              onPressed: () => context.push(
+                                Routes.spotsList.description,
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                elevation: 3.height,
+                                shadowColor: Colors.black,
+                                backgroundColor: colorScheme.secondary,
+                                side: BorderSide(
+                                  style: BorderStyle.solid,
+                                  color: colorScheme.primary,
+                                ),
+                              ),
+                              child: Text(
+                                'Ver Vagas',
+                                textAlign: TextAlign.center,
+                                style: textTheme.displaySmall!.copyWith(
+                                  color: AppColors.neutral500,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  );
+                },
+              );
+            }),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              _CardTextLine('Ocupadas:'),
-              _CardTextLine(
-                '10',
-                textColor: Colors.red,
-                fontWeight: FontWeight.w600,
-                fontSize: FontSize.rg,
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const <Widget>[
-              _CardTextLine(
-                'Total de vagas:',
-              ),
-              _CardTextLine(
-                '42',
-                textColor: Colors.black,
-                fontSize: FontSize.rg,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 18.height,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 180.width,
-                child: OutlinedButton(
-                  onPressed: () => context.push(
-                    Routes.spotsList.description,
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    elevation: 3.height,
-                    shadowColor: Colors.black,
-                    backgroundColor: colorScheme.secondary,
-                    side: BorderSide(
-                      style: BorderStyle.solid,
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  child: Text(
-                    'Ver Vagas',
-                    textAlign: TextAlign.center,
-                    style: textTheme.displaySmall!.copyWith(
-                      color: AppColors.neutral500,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

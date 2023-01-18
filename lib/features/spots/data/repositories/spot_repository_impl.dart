@@ -1,4 +1,5 @@
 import 'package:ezpark/core/network/response/entities/response_result.dart';
+import 'package:ezpark/features/spots/domain/entities/spots_count.dart';
 import 'package:ezpark/features/spots/enums/spot_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,4 +56,9 @@ class SpotRepositoryImpl implements SpotRepository {
         spotNumber: spotNumber,
         spotStatus: spotStatus,
       );
+
+  @override
+  Future<ResponseResult<SpotsCount>> getSpotsCounter() {
+    return _datasource.getSpotsCounter();
+  }
 }

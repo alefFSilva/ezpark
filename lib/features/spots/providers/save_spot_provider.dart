@@ -1,4 +1,5 @@
 import 'package:ezpark/features/spots/enums/spot_form_action.dart';
+import 'package:ezpark/features/spots/providers/spots_counter_provider.dart';
 import 'package:ezpark/features/spots/providers/spots_list_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,6 +43,7 @@ class SaveSpotFormNotifier extends StateNotifier<AsyncValue<ResponseResult>> {
             spotToSave: spotToSave,
           );
     _ref.invalidate(avaliableSpotsListProvider);
+    _ref.invalidate(spotsCounterProvider);
 
     state = AsyncValue<ResponseResult<Spot>>.data(result);
   }

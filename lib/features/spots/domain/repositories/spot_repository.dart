@@ -1,3 +1,4 @@
+import 'package:ezpark/features/spots/domain/entities/spots_count.dart';
 import 'package:ezpark/features/spots/enums/spot_status.dart';
 
 import '../../../../../core/network/response/entities/response_result.dart';
@@ -19,4 +20,6 @@ abstract class SpotRepository {
     required int spotNumber,
     required SpotStatus spotStatus,
   });
+
+  Future<ResponseResult<SpotsCount>> getSpotsCounter();
 }

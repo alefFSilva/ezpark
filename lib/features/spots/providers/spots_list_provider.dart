@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ezpark/features/spots/enums/spot_status.dart';
+import 'package:ezpark/features/spots/providers/spots_counter_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/response/entities/response_result.dart';
@@ -73,6 +74,7 @@ class SpotsListNotifier extends AsyncNotifier<List<Spot>> {
     );
 
     ref.invalidate(avaliableSpotsListProvider);
+    ref.invalidate(spotsCounterProvider);
     ref.read(spotsListProvider.notifier).refresh();
     return result;
   }
