@@ -68,98 +68,106 @@ class _EntriesListState extends ConsumerState<_EntriesList> {
     return entriesProvider.when(
       data: (List<Entry> entries) {
         return entries.isNotEmpty
-            ? ListView(
-                padding: const EdgeInsets.all(Spacings.m),
-                children: [
-                  for (final entry in entries)
-                    Card(
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.only(left: Spacings.m),
-                        title: Row(
-                          children: [
-                            Text(
-                              '${entry.vehicleName} - ',
-                              style: textTheme.titleMedium!.copyWith(
-                                color: AppColors.neutral600,
-                              ),
-                            ),
-                            Text(
-                              '${entry.vehiclePlate} ',
-                              style: textTheme.titleMedium!
-                                  .copyWith(color: AppColors.neutral500),
-                            ),
-                          ],
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Cor: ',
-                                  style: textTheme.titleSmall!.copyWith(
-                                    color: AppColors.neutral400,
-                                  ),
+            ? RefreshIndicator(
+                onRefresh: () => ref
+                    .read(
+                      entriesListProvider.notifier,
+                    )
+                    .refresh(),
+                child: ListView(
+                  padding: const EdgeInsets.all(Spacings.m),
+                  children: [
+                    for (final entry in entries)
+                      Card(
+                        child: ListTile(
+                          contentPadding:
+                              const EdgeInsets.only(left: Spacings.m),
+                          title: Row(
+                            children: [
+                              Text(
+                                '${entry.vehicleName} - ',
+                                style: textTheme.titleMedium!.copyWith(
+                                  color: AppColors.neutral600,
                                 ),
-                                Icon(
-                                  Icons.square,
-                                  size: 20.width,
-                                  color: entry.vehicleColor.color,
-                                  shadows: [
-                                    Shadow(
-                                        color: Colors.black,
-                                        blurRadius: 2.width)
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Text(
-                              'Nº da Vaga: ${entry.spot.number} ',
-                              style: textTheme.titleSmall!.copyWith(
-                                color: AppColors.neutral400,
                               ),
-                            ),
-                            Text(
-                              'Entrada: ${DateFormat("dd/MM/yyyy - H:mm").format(
-                                entry.entryTime,
-                              )} ',
-                              style: textTheme.titleSmall!.copyWith(
-                                color: AppColors.neutral400,
+                              Text(
+                                '${entry.vehiclePlate} ',
+                                style: textTheme.titleMedium!
+                                    .copyWith(color: AppColors.neutral500),
                               ),
-                            ),
-                            (entry.status == EntryStatus.completed &&
-                                    entry.completedTime != null)
-                                ? Text(
-                                    'Saída: ${DateFormat("dd/MM/yyyy - H:mm").format(
-                                      entry.completedTime!,
-                                    )} ',
+                            ],
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Cor: ',
                                     style: textTheme.titleSmall!.copyWith(
                                       color: AppColors.neutral400,
                                     ),
-                                  )
-                                : _CompleteEntryButton(entry: entry),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              icon: const Icon(
-                                Icons.delete_outline_outlined,
-                                color: Colors.red,
+                                  ),
+                                  Icon(
+                                    Icons.square,
+                                    size: 20.width,
+                                    color: entry.vehicleColor.color,
+                                    shadows: [
+                                      Shadow(
+                                          color: Colors.black,
+                                          blurRadius: 2.width)
+                                    ],
+                                  ),
+                                ],
                               ),
-                              padding: EdgeInsets.zero,
-                              onPressed: () => _showdeleteConfirmationDialog(
-                                entryID: entry.id,
-                                spotNumber: entry.spot.number,
+                              Text(
+                                'Nº da Vaga: ${entry.spot.number} ',
+                                style: textTheme.titleSmall!.copyWith(
+                                  color: AppColors.neutral400,
+                                ),
                               ),
-                            )
-                          ],
+                              Text(
+                                'Entrada: ${DateFormat("dd/MM/yyyy - H:mm").format(
+                                  entry.entryTime,
+                                )} ',
+                                style: textTheme.titleSmall!.copyWith(
+                                  color: AppColors.neutral400,
+                                ),
+                              ),
+                              (entry.status == EntryStatus.completed &&
+                                      entry.completedTime != null)
+                                  ? Text(
+                                      'Saída: ${DateFormat("dd/MM/yyyy - H:mm").format(
+                                        entry.completedTime!,
+                                      )} ',
+                                      style: textTheme.titleSmall!.copyWith(
+                                        color: AppColors.neutral400,
+                                      ),
+                                    )
+                                  : _CompleteEntryButton(entry: entry),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete_outline_outlined,
+                                  color: Colors.red,
+                                ),
+                                padding: EdgeInsets.zero,
+                                onPressed: () => _showdeleteConfirmationDialog(
+                                  entryID: entry.id,
+                                  spotNumber: entry.spot.number,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               )
             : Center(
                 child: Column(
@@ -184,7 +192,7 @@ class _EntriesListState extends ConsumerState<_EntriesList> {
         return SizedBox.shrink();
       },
       loading: () {
-        return CircularProgressIndicator();
+        return const CircularProgressIndicator();
       },
     );
   }
@@ -212,6 +220,7 @@ class _EntriesListState extends ConsumerState<_EntriesList> {
                   context,
                   message: 'Entrada deletada com sucesso',
                 );
+
                 Navigator.pop(context);
               },
             );

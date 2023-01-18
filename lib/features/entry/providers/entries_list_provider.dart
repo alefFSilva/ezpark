@@ -55,6 +55,7 @@ class EntriesListNotifier extends AsyncNotifier<List<Entry>> {
           spotNumber: spotNumber,
           spotStatus: SpotStatus.active,
         );
+    refresh();
     return result;
   }
 
