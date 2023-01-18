@@ -29,15 +29,12 @@ class DashBoardPage extends StatelessWidget {
       pageTitle: 'EzPark',
       body: Padding(
         padding: const EdgeInsets.all(Spacings.xs),
-        child: Column(
-          children: [
-            const Flexible(
-              flex: 3,
-              child: _SpotsCard(),
-            ),
-            Flexible(
-              flex: 5,
-              child: GridView.builder(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const _SpotsCard(),
+              GridView.builder(
                 shrinkWrap: true,
                 itemCount: dashboardOption.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -45,8 +42,8 @@ class DashBoardPage extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) => dashboardOption[index],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -111,7 +108,10 @@ class _SpotsCard extends ConsumerWidget {
           child: _DashboardCard(
             contentAlignment: MainAxisAlignment.start,
             content: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Spacings.xs.width),
+              padding: EdgeInsets.symmetric(
+                horizontal: Spacings.xs.width,
+                vertical: Spacings.m.height,
+              ),
               child: Builder(builder: (context) {
                 final spotsCounter = ref.watch(spotsCounterProvider);
                 return spotsCounter.when(

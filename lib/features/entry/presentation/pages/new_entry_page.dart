@@ -69,163 +69,166 @@ class _NewEntryFormState extends ConsumerState<_NewEntryForm> {
         vertical: Spacings.m.height,
         horizontal: Spacings.m.width,
       ),
-      child: Form(
-        autovalidateMode: AutovalidateMode.always,
-        key: _formKey,
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Align(
-                child: _AddPhotoButton(),
-              ),
-              SizedBox(
-                height: Spacings.xl.height,
-              ),
-              CustomTextFormField(
-                labelText: 'Nome do veículo',
-                valuesToUppercase: true,
-                controller: _vehicleNameController,
-                onChanged: null,
-                keyboardType: TextInputType.number,
-                validator: (String? value) {
-                  if (value == null || (value.isEmpty)) {
-                    return 'Por favor, preencha o nome do veiculo';
-                  }
-                  return null;
-                },
-              ),
-              CustomTextFormField(
-                valuesToUppercase: true,
-                labelText: 'Placa do veículo',
-                controller: _vehiclePlateController,
-                onChanged: null,
-                keyboardType: TextInputType.number,
-                validator: (String? value) {
-                  if (value == null || (value.isEmpty)) {
-                    return 'Por favor, preencha a placa do veiculo';
-                  }
-                  return null;
-                },
-              ),
-              DropdownButtonFormField<VehicleColorsOption>(
-                value: _selectedColor,
-                validator: (VehicleColorsOption? value) {
-                  if (value == null) {
-                    return 'Por favor, escolha uma cor';
-                  }
-                  return null;
-                },
-                hint: Text(
-                  'Cor do veículo',
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                        color: AppColors.neutral500,
-                      ),
+      child: SingleChildScrollView(
+        child: Form(
+          autovalidateMode: AutovalidateMode.always,
+          key: _formKey,
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Align(
+                  child: _AddPhotoButton(),
                 ),
-                icon: Icon(
-                  Icons.expand_more_outlined,
-                  color: colorScheme.primary,
+                SizedBox(
+                  height: Spacings.xl.height,
                 ),
-                dropdownColor: AppColors.neutral50,
-                onChanged: (VehicleColorsOption? value) {
-                  setState(() {
-                    _selectedColor = value!;
-                  });
-                },
-                items: <DropdownMenuItem<VehicleColorsOption>>[
-                  for (final colorOption in VehicleColorsOption.values)
-                    DropdownMenuItem(
-                      value: colorOption,
-                      child: _DropdownCarColorItem(
-                        carColorsOption: colorOption,
+                CustomTextFormField(
+                  labelText: 'Nome do veículo',
+                  valuesToUppercase: true,
+                  controller: _vehicleNameController,
+                  onChanged: null,
+                  keyboardType: TextInputType.number,
+                  validator: (String? value) {
+                    if (value == null || (value.isEmpty)) {
+                      return 'Por favor, preencha o nome do veiculo';
+                    }
+                    return null;
+                  },
+                ),
+                CustomTextFormField(
+                  valuesToUppercase: true,
+                  labelText: 'Placa do veículo',
+                  controller: _vehiclePlateController,
+                  onChanged: null,
+                  keyboardType: TextInputType.number,
+                  validator: (String? value) {
+                    if (value == null || (value.isEmpty)) {
+                      return 'Por favor, preencha a placa do veiculo';
+                    }
+                    return null;
+                  },
+                ),
+                DropdownButtonFormField<VehicleColorsOption>(
+                  value: _selectedColor,
+                  validator: (VehicleColorsOption? value) {
+                    if (value == null) {
+                      return 'Por favor, escolha uma cor';
+                    }
+                    return null;
+                  },
+                  hint: Text(
+                    'Cor do veículo',
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                          color: AppColors.neutral500,
+                        ),
+                  ),
+                  icon: Icon(
+                    Icons.expand_more_outlined,
+                    color: colorScheme.primary,
+                  ),
+                  dropdownColor: AppColors.neutral50,
+                  onChanged: (VehicleColorsOption? value) {
+                    setState(() {
+                      _selectedColor = value!;
+                    });
+                  },
+                  items: <DropdownMenuItem<VehicleColorsOption>>[
+                    for (final colorOption in VehicleColorsOption.values)
+                      DropdownMenuItem(
+                        value: colorOption,
+                        child: _DropdownCarColorItem(
+                          carColorsOption: colorOption,
+                        ),
                       ),
-                    ),
-                ],
-              ),
-              Consumer(
-                builder: (context, ref, _) {
-                  final spotsAsync = ref.watch(avaliableSpotsListProvider);
+                  ],
+                ),
+                Consumer(
+                  builder: (context, ref, _) {
+                    final spotsAsync = ref.watch(avaliableSpotsListProvider);
 
-                  return spotsAsync.when(
-                    data: (List<Spot> data) {
-                      return DropdownButtonFormField<Spot>(
-                        validator: (Spot? value) {
-                          if (value == null) {
-                            return 'Por favor, escolha uma vaga';
-                          }
-                          return null;
-                        },
-                        onChanged: (Spot? value) {
-                          setState(
-                            () {
-                              _selectedSpot = value;
-                            },
-                          );
-                        },
-                        value: _selectedSpot,
-                        hint: Text(
-                          data.isEmpty
-                              ? 'Não há vagas disponíveis'
-                              : 'Vagas disponíveis',
-                          style: textTheme.labelSmall!.copyWith(
-                            color: data.isEmpty
-                                ? Colors.red
-                                : AppColors.neutral500,
+                    return spotsAsync.when(
+                      data: (List<Spot> data) {
+                        return DropdownButtonFormField<Spot>(
+                          validator: (Spot? value) {
+                            if (value == null) {
+                              return 'Por favor, escolha uma vaga';
+                            }
+                            return null;
+                          },
+                          onChanged: (Spot? value) {
+                            setState(
+                              () {
+                                _selectedSpot = value;
+                              },
+                            );
+                          },
+                          value: _selectedSpot,
+                          hint: Text(
+                            data.isEmpty
+                                ? 'Não há vagas disponíveis'
+                                : 'Vagas disponíveis',
+                            style: textTheme.labelSmall!.copyWith(
+                              color: data.isEmpty
+                                  ? Colors.red
+                                  : AppColors.neutral500,
+                            ),
+                          ),
+                          icon: Icon(
+                            Icons.expand_more_outlined,
+                            color: colorScheme.primary,
+                          ),
+                          items: <DropdownMenuItem<Spot>>[
+                            for (final spot in data)
+                              DropdownMenuItem(
+                                value: spot,
+                                child: _DropdownItemLeadingIcon(
+                                  description:
+                                      'Vaga: ${spot.number.toString()}',
+                                  leadingIcon: spot.spotType.icon,
+                                  leadingIconColor: colorScheme.primary,
+                                  applyShadowToLeadingIcon: false,
+                                ),
+                              )
+                          ],
+                        );
+                      },
+                      error: (error, stackTrace) => const SizedBox.shrink(),
+                      loading: () => const CircularProgressIndicator(),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: Spacings.xl.height,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _formKey.currentState != null &&
+                                _formKey.currentState!.validate()
+                            ? () {
+                                _onSaveEntry();
+                              }
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          primary: colorScheme.primary,
+                          elevation: 2,
+                          shadowColor: Colors.black,
+                          onPrimary: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        child: Text(
+                          'Salvar',
+                          style: textTheme.displaySmall!.copyWith(
+                            color: AppColors.neutral1,
                           ),
                         ),
-                        icon: Icon(
-                          Icons.expand_more_outlined,
-                          color: colorScheme.primary,
-                        ),
-                        items: <DropdownMenuItem<Spot>>[
-                          for (final spot in data)
-                            DropdownMenuItem(
-                              value: spot,
-                              child: _DropdownItemLeadingIcon(
-                                description: 'Vaga: ${spot.number.toString()}',
-                                leadingIcon: spot.spotType.icon,
-                                leadingIconColor: colorScheme.primary,
-                                applyShadowToLeadingIcon: false,
-                              ),
-                            )
-                        ],
-                      );
-                    },
-                    error: (error, stackTrace) => const SizedBox.shrink(),
-                    loading: () => const CircularProgressIndicator(),
-                  );
-                },
-              ),
-              SizedBox(
-                height: Spacings.xl.height,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _formKey.currentState != null &&
-                              _formKey.currentState!.validate()
-                          ? () {
-                              _onSaveEntry();
-                            }
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        primary: colorScheme.primary,
-                        elevation: 2,
-                        shadowColor: Colors.black,
-                        onPrimary: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                      child: Text(
-                        'Salvar',
-                        style: textTheme.displaySmall!.copyWith(
-                          color: AppColors.neutral1,
-                        ),
                       ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
