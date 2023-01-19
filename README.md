@@ -5,6 +5,12 @@
 
 Esta aplicação tem como objetivo facilitar a gestão de um estacionamento com cadastro de vagas, registro de entradas e saídas e relatório diário.
 
+
+
+
+https://user-images.githubusercontent.com/23003445/213338699-e3ab3960-4c65-4200-ac76-111a7557e25d.mov
+
+
 ## Funcionalidades
 
 ### SplashScreen
