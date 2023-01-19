@@ -1,4 +1,4 @@
-# Aplicação ezpark - Gestão de estacionamento - Teste para o processo seletivo da raro Labs =]
+# Aplicação ezpark - Gestão de estacionamento - Teste para o processo seletivo da Raro Labs =]
 
 
 ## Descrição
